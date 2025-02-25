@@ -7,6 +7,6 @@ public class Prodotto {
 	public Prodotto(String nome) {
 		this.nome = nome;
 	}
-	
+	//succhiamelo
 	
 }
