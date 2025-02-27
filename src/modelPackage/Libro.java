@@ -1,4 +1,4 @@
-package mainPakage;
+package modelPackage;
 
 public class Libro extends Prodotto{
 

@@ -1,4 +1,4 @@
-package mainPakage;
+package modelPackage;
 
 public class Citta {
 	public static void main (String[] args)
