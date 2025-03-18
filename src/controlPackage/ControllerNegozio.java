@@ -2,12 +2,26 @@ package controlPackage;
 
 import modelPackage.*;
 
-public class Controller {
+public class ControllerNegozio {
 
 	public Negozio negozio;
+	public Prodotto prodottoVendere; //verrà recuperato dai listener
 	
-	public Controller(Negozio negozio) {
+	public ControllerNegozio(Negozio negozio) {
 		this.negozio = negozio;
+	}
+	
+	public void acquistaNegozio(double prezzo) {
+		
+	}
+	
+	public void aperturaNegozio() {
+		if(!negozio.aperto) {
+			negozio.aperto=true;
+		}
+		else {
+			negozio.aperto=false;
+		}
 	}
 	
 	public void acquistaProdottiMagazzino(double patrimonio, int nProdotti) {
@@ -30,22 +44,11 @@ public class Controller {
 	}
 			
 	//vendita e rimozione dallo scaffale di un prodotto
-	public void vendiProdotto(double patrimonio, Prodotto prodotto) {
-			
-		boolean venduto=false;
+	public void vendiProdotto(double patrimonio) {
 		
-		for(int i=0; i<negozio.prodottiScaffale.size() && venduto==false; i++) {	
-			if(negozio.prodottiScaffale.equals(prodotto)) {
-				negozio.prodottiScaffale.remove(i);
-				patrimonio+=negozio.prezzoVendita;
-				System.out.println("prodotto con nome " + prodotto.nome + " è stato venduto");
-				venduto = true;
-			}		
-		}
-		
-		if(!venduto) {
-			System.out.println("Il prodotto non è presente negli scaffali");
-		}
+		negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
+		patrimonio+=negozio.prezzoVendita;
+		System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
 		
 	}
 	
@@ -103,6 +106,35 @@ public class Controller {
 		}
 		
 	}
+
+	public void sceltaProdotto(int indexDomanda, String richiesta) {
+		if(indexDomanda == 0) {
+			richiesta = negozio.prodottiEsistenti[(int)Math.random()*49].nome;
+		}
+		else {
+			richiesta = negozio.prodottiEsistenti[(int)Math.random()*49].specifica;
+		}
+	}
 	
+	public boolean checkProdotto(int indexDomanda, String richiesta) {
+		
+		if(indexDomanda == 0) {
+			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {			
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else if(indexDomanda == 1) {
+			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		
+	}
 	
 }

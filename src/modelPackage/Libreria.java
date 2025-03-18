@@ -4,7 +4,10 @@ public class Libreria extends Negozio{
 
 	
 	public Libreria() {
-		super();
+		super(1);
+		this.dimensioneMagazzino = 50;
+		this.dimensioneScaffali = 30;
+		this.prezzoNegozio = 50000;
 		this.setPrezziBase();
 	}
 
@@ -12,6 +15,7 @@ public class Libreria extends Negozio{
 	public void setPrezziBase() {
 		prezzoVendita = 15.50;
 		prezzoAcquisto = 10;
+		
 	}
 
 	@Override

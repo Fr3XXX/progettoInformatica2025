@@ -2,6 +2,9 @@ package modelPackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
+
+import controlPackage.*;
 
 public abstract class Negozio {
 
@@ -10,18 +13,36 @@ public abstract class Negozio {
 	public HashMap <String, Integer> livelliNegozio = new HashMap <String, Integer>(); //tiene tracca del livello del negozio
 	public double prezzoVendita;
 	public double prezzoAcquisto;
+	public double prezzoNegozio;
+	public int livelloNegozio;
+	public boolean aperto;
+	public int codaNegozio;
+	public int maxCoda;
+	public ControllerNegozio controller;
 	public ArrayList <Prodotto> prodottiScaffale = new ArrayList <>(); //lista di prodotti in vendita
 	public ArrayList <Prodotto> prodottiMagazzino = new ArrayList <>(); //lista di prodotti in magazzino
 	public Prodotto[] prodottiEsistenti = new Prodotto[50];
+	public Thread[] clienti = new Thread[8];
+	public Semaphore servito = new Semaphore(0);//serve per gestire i clienti
+	public Semaphore mutex = new Semaphore(1); //serve per gestire la mutua esclusione legata ai clienti
   
-	public Negozio() {
+	public Negozio(int livelloNegozio) {
+			
+		this.codaNegozio = 0;
+		this.maxCoda = 6;
+		this.livelliNegozio.put("Totale", 1);
+		this.livelliNegozio.put("Scaffali", 1);
+		this.livelliNegozio.put("Magazzino", 1);
+		this.aperto=false;
+		controller= new ControllerNegozio(this);
 		
-		//quando un negozio viene comprato vengono settate le dimensioni base
-		this.dimensioneMagazzino = 50;
-		this.dimensioneScaffali = 30;
-		livelliNegozio.put("Totale", 1);
-		livelliNegozio.put("Scaffali", 1);
-		livelliNegozio.put("Magazzino", 1);
+		for(int i=0; i<clienti.length; i++) {
+			clienti[i] = new Thread(new Cliente(this));
+			
+		}
+			
+		
+		
 		
 	}
 	
