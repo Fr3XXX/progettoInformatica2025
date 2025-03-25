@@ -1,11 +1,12 @@
 package modelPackage;
 
-public class Concessionario extends Negozio{
+public class Gioelleria extends Negozio{
 
-	public Concessionario() {
+	public Gioelleria() {
 		super(3);
 		// TODO Auto-generated constructor stub
 	}
+
 
 	@Override
 	public void inserisciProdottiEsistenti() {

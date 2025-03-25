@@ -3,14 +3,16 @@ package modelPackage;
 public class Cliente implements Runnable{
 
 	public Negozio negozio;
-	public double tempoAttesaMax;
+	public long tempoAttesaMax;
 	public double maxSoldiSpendibili;
 	public String domandaCliente;
 	public int indexDomanda;
 	public String richiesta="";
 	public boolean venduto;
+	public boolean stufato; //se il cliente si stufa di stare in fila diventa true
 	public String rispostaCliente;
-	public String esclamazioneCliente;
+	public Thread tempoInFila;
+	public CodaNegozio coda;
 	public String[][] domande = new String[2][10];//domande[0] sono la richiesta specifica del libro, domande[1] sono richieste di libri in base alla specifica
 	public String[][] risposte = new String[2][5];//risposte[0] positive, risposte[1] negative.
 	public String[][] esclamazioni = new String[2][3];//esclamazioni[0] per prezzo alto, esclamazioni[1] per troppo tempo in fila
@@ -20,7 +22,7 @@ public class Cliente implements Runnable{
 
 		this.negozio = negozio;
 		
-		this.domande[0][0] = "Buongiorno, potrei sapere se avete disponibile una copia di";
+		this.domande[0][0] = "Buongiorno, potrei sapere se avete disponibile una copia di ";
 		this.domande[0][1] = "Salve, percaso avete ";
 		this.domande[0][2] = "Ciao! Per caso avete una copia di ";
 		this.domande[0][3] = "Buongiorno, vorrei acquistare una copia di ";
@@ -57,7 +59,7 @@ public class Cliente implements Runnable{
 		
 		
 		this.esclamazioni[0][0] = "Ma quanto ci vuole? Non si muove mai questa fila!";
-		this.esclamazioni[0][1] = "Oh no, ma è infinita questa coda!";
+		this.esclamazioni[0][1] = "Dio bon ma è infinita questa coda!";
 		this.esclamazioni[0][2] = "Che stress, non posso aspettare tutto il giorno!";
 		
 		this.esclamazioni[1][0] = "Ma è un furto! Con questi prezzi ci compro una casa!";
@@ -71,7 +73,8 @@ public class Cliente implements Runnable{
 		while(true) {
 			
 			if(this.negozio.aperto == true) {
-				tempoAttesaMax = Math.random()*59 + 1; //tempo di attesa che va da 1 a 60
+				stufato = false;
+				tempoAttesaMax = (long) ((Math.random()*89 + 1)*1000); //tempo di attesa che va da 1 a 60
 				maxSoldiSpendibili = this.negozio.prezzoAcquisto + Math.random()*(this.negozio.prezzoAcquisto/2 - 2) + 2;
 				indexDomanda = (int) Math.random();
 				domandaCliente = this.domande[indexDomanda][(int) Math.random()*9];
@@ -84,33 +87,39 @@ public class Cliente implements Runnable{
 						//qui può andare avanti solo se può essere servito, quindi diventa il primo cliente della fila
 						//qui bisogna abilitare il bottone per servire(btnServire.setEnabled(true));
 						//in modo tale che si possa andare avanti
+						coda = new CodaNegozio(this);
+						tempoInFila = new Thread(coda);
+						
+						tempoInFila.start();
 						
 						this.negozio.servito.acquire(); // quando verrà premuto il bottone per servire, ci sarà il anche servito.release(), 
 						//che permetterà di far andare avanti qui
-
-						negozio.controller.sceltaProdotto(indexDomanda, richiesta);
-						//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
-						//domandaCliente
-						
-						this.negozio.servito.acquire();
-						//qui aspetta che il venditore clicchi e trovi il prodotto da vendere
-						//nel punto in cui verrà scelto andrà fatto il servito.release() per far andare avanti il cliente
-						
-						venduto = negozio.controller.checkProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
-						//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
-						//la richiesta del cliente sarà nel controller, recuperata dai listener
-						if(venduto) {
-							rispostaCliente = risposte[0][(int) Math.random()*4];
-							negozio.controller.vendiProdotto(User.patrimonioUtente);
-						}
-						else {
-							rispostaCliente = risposte[1][(int) Math.random()*4];
-						}
-						
-						//stampa risposta nella view con metodo che prende come parametro rispostaCliente
-						
-						negozio.mutex.release();//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
-						
+						coda.finito = false;
+						if(!stufato) {
+							negozio.controller.sceltaProdotto(indexDomanda, richiesta);
+							//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
+							//domandaCliente
+							
+							this.negozio.servito.acquire();
+							//qui aspetta che il venditore clicchi e trovi il prodotto da vendere
+							//nel punto in cui verrà scelto andrà fatto il servito.release() per far andare avanti il cliente
+							
+							venduto = negozio.controller.checkProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
+							//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
+							//la richiesta del cliente sarà nel controller, recuperata dai listener
+							if(venduto) {
+								rispostaCliente = risposte[0][(int) Math.random()*4];
+								negozio.controller.vendiProdotto(User.patrimonioUtente);
+							}
+							else {
+								rispostaCliente = risposte[1][(int) Math.random()*4];
+							}
+							
+							//stampa risposta nella view con metodo che prende come parametro rispostaCliente
+							
+							negozio.mutex.release();//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
+							
+						}		
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 

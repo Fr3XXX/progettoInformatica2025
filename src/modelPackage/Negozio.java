@@ -38,16 +38,35 @@ public abstract class Negozio {
 		
 		for(int i=0; i<clienti.length; i++) {
 			clienti[i] = new Thread(new Cliente(this));
-			
 		}
-			
-		
-		
 		
 	}
 	
-	//all'interno delle classi dei singoli negozi verranno settati i prezzi di base
-	public abstract void setPrezziBase();
+	public void setPrezziBase() {
+		switch(livelloNegozio) {
+		case 1:
+			this.dimensioneMagazzino = 20;
+			this.dimensioneScaffali = 10;
+			this.prezzoNegozio = 50000;
+			this.prezzoVendita = 45;
+			this.prezzoAcquisto = 30;
+			break;
+		case 2:
+			this.dimensioneMagazzino = 40;
+			this.dimensioneScaffali = 20;
+			this.prezzoNegozio = 100000;
+			this.prezzoVendita = 75;
+			this.prezzoAcquisto = 50;
+			break;
+		case 3:
+			this.dimensioneMagazzino = 60;
+			this.dimensioneScaffali = 30;
+			this.prezzoNegozio = 175000;
+			this.prezzoVendita = 135;
+			this.prezzoAcquisto = 90;
+			break;
+		}
+	}
 	
 	//all'interno del singolo negozio verranno inseriti i prodotto che esistono, poi quando si acquistano prodotti,
 	//essi verranno scelti tra i prodotti esistenti in maniera casuale.

@@ -2,10 +2,9 @@ package modelPackage;
 
 public class GameStop extends Negozio{
 
-	@Override
-	public void setPrezziBase() {
-		// TODO Auto-generated method stub
-		
+	public GameStop() {
+		super(1);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
