@@ -33,6 +33,9 @@ public abstract class Negozio {
 		this.livelliNegozio.put("Totale", 1);
 		this.livelliNegozio.put("Scaffali", 1);
 		this.livelliNegozio.put("Magazzino", 1);
+		this.livelliNegozio.put("DipScaffaleCliente", 0);
+		this.livelliNegozio.put("DipMagazzinoScaffale", 0);
+		this.livelliNegozio.put("DipMagazzinoAcquisto", 0);
 		this.aperto=false;
 		controller= new ControllerNegozio(this);
 		

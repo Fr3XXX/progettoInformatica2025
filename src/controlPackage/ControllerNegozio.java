@@ -137,4 +137,16 @@ public class ControllerNegozio {
 		
 	}
 	
+	public void acquistaDipendente(int prezzo, String nome) {
+		//nome è il nome del dipendente che deve corrispondere con la chiave dell'hashmap
+		if(prezzo>User.patrimonioUtente) {
+			System.out.println("Non puoi permetterti di acquistare il dipendente");
+		}
+		else {
+			User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+			this.negozio.livelliNegozio.replace(nome, 60);
+		}
+		
+	}
+	
 }

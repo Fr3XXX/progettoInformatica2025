@@ -74,7 +74,7 @@ public class Cliente implements Runnable{
 			
 			if(this.negozio.aperto == true) {
 				stufato = false;
-				tempoAttesaMax = (long) ((Math.random()*89 + 1)*1000); //tempo di attesa che va da 1 a 60
+				tempoAttesaMax = (long) ((Math.random()*89 + 1)*1000); //tempo di attesa che va da 1 a 90
 				maxSoldiSpendibili = this.negozio.prezzoAcquisto + Math.random()*(this.negozio.prezzoAcquisto/2 - 2) + 2;
 				indexDomanda = (int) Math.random();
 				domandaCliente = this.domande[indexDomanda][(int) Math.random()*9];
