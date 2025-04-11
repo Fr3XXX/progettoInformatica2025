@@ -118,23 +118,23 @@ public class ControllerNegozio {
 	
 	public boolean checkProdotto(int indexDomanda, String richiesta) {
 		
-		if(indexDomanda == 0) {
-			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {			
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else if(indexDomanda == 1) {
-			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		
+//		if(indexDomanda == 0) {
+//			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {			
+//				return true;
+//			}
+//			else {
+//				return false;
+//			}
+//		}
+//		else if(indexDomanda == 1) {
+//			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {
+//				return true;
+//			}
+//			else {
+//				return false;
+//			}
+//		}
+		return true;
 	}
 	
 	public void acquistaDipendente(int prezzo, String nome) {
