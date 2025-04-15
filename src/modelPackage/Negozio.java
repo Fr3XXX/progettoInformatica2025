@@ -1,12 +1,14 @@
 package modelPackage;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import controlPackage.*;
+import viewPackage.*;
 
-public abstract class Negozio {
+public abstract class Negozio extends GameObject{
 
 	public int dimensioneScaffali; //numero massimo di prodotti da poter avere in vendita
 	public int dimensioneMagazzino; //numero  massimo di prodotti da poter avere in magazzino
@@ -26,8 +28,10 @@ public abstract class Negozio {
 	public Semaphore servito = new Semaphore(0);//serve per gestire i clienti
 	public Semaphore mutex = new Semaphore(1); //serve per gestire la mutua esclusione legata ai clienti
   
-	public Negozio(int livelloNegozio) {
-			
+	public Negozio(int livelloNegozio, GamePanel gamePanel) {
+		
+		super(gamePanel);
+		
 		this.codaNegozio = 0;
 		this.maxCoda = 6;
 		this.livelliNegozio.put("Totale", 1);

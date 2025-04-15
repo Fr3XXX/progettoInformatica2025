@@ -38,6 +38,9 @@ public class GamePanel extends JPanel implements Runnable {
 	TileManager tileM = new TileManager(this);
 	
 	private JFrame window;
+	
+	//view negozi
+	public ViewGioielleria viewGioielleria;
 
 	public GamePanel(JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -54,8 +57,6 @@ public class GamePanel extends JPanel implements Runnable {
 		// Inizializza input e thread separato
 		InputManager.initialize(this);
 
-		// Istanzia oggetti
-		ViewGioielleria gioielleria = new ViewGioielleria(this, "/casa.png", 10, 10, 64, 64);
 		
 		// Avvio del thread principale del gioco
 		gameThread = new Thread(this);
