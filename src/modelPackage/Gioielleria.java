@@ -7,9 +7,9 @@ public class Gioielleria extends Negozio{
 	ViewGioielleria viewGioielleria;
 	
 
-	public Gioielleria(GamePanel gamePanel) {
+	public Gioielleria(GamePanel gamePanel, ViewGioielleria viewGioielleria) {
 		super(3, gamePanel);
-		this.viewGioielleria = new ViewGioielleria(gamePanel, "/casa.png", 10, 10, 64, 64);
+		this.viewGioielleria = viewGioielleria;
 		
 	}
 

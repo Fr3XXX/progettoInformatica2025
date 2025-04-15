@@ -29,8 +29,9 @@ public class MyFrame extends JFrame{
 		User utente = new User();
 		ControllerUtente controllerUtente = new ControllerUtente(utente);
 		
+		ViewGioielleria viewGioielleria = new ViewGioielleria(gamePanel, "/casa.png", 10, 10, 64, 64);
 		//sono di prova per avere un negozio su cui fare la view, poi verrannno tolti e aggiunta condizione per comprarli
-		controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel));
+		controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
 		Gioielleria gioielleria = (Gioielleria) utente.negoziPosseduti.get(0);
 		
 		
