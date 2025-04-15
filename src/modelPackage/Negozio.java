@@ -27,7 +27,11 @@ public abstract class Negozio extends GameObject{
 	public Thread[] clienti = new Thread[8];
 	public Semaphore servito = new Semaphore(0);//serve per gestire i clienti
 	public Semaphore mutex = new Semaphore(1); //serve per gestire la mutua esclusione legata ai clienti
-  
+	public Magazziniere magazziniere;
+	public Cassiere cassiere;
+	public Commerciante commerciante;
+	
+	
 	public Negozio(int livelloNegozio, GamePanel gamePanel) {
 		
 		super(gamePanel);
@@ -37,10 +41,8 @@ public abstract class Negozio extends GameObject{
 		this.livelliNegozio.put("Totale", 1);
 		this.livelliNegozio.put("Scaffali", 1);
 		this.livelliNegozio.put("Magazzino", 1);
-		this.livelliNegozio.put("DipScaffaleCliente", 0);
-		this.livelliNegozio.put("DipMagazzinoScaffale", 0);
-		this.livelliNegozio.put("DipMagazzinoAcquisto", 0);
 		this.aperto=false;
+		this.inserisciProdottiEsistenti();
 		controller= new ControllerNegozio(this);
 		
 		for(int i=0; i<clienti.length; i++) {

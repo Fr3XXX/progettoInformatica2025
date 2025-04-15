@@ -24,12 +24,12 @@ public class ControllerNegozio {
 		}
 	}
 	
-	public void acquistaProdottiMagazzino(double patrimonio, int nProdotti) {
+	public void acquistaProdottiMagazzino(int nProdotti) {
 			
-		if(patrimonio >= nProdotti*negozio.prezzoAcquisto) {			
+		if(User.patrimonioUtente >= nProdotti*negozio.prezzoAcquisto) {			
 			if((50 - negozio.prodottiMagazzino.size()) >= nProdotti) {
 				for(int i=0; i<nProdotti; i++) {
-					patrimonio-=negozio.prezzoAcquisto;			
+					User.patrimonioUtente-=negozio.prezzoAcquisto;			
 							negozio.prodottiMagazzino.add(negozio.prodottiEsistenti[(int) Math.random()*49]);
 				}	
 			}
@@ -44,22 +44,22 @@ public class ControllerNegozio {
 	}
 			
 	//vendita e rimozione dallo scaffale di un prodotto
-	public void vendiProdotto(double patrimonio) {
+	public void vendiProdotto() {
 		
 		negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
-		patrimonio+=negozio.prezzoVendita;
+		User.patrimonioUtente+=negozio.prezzoVendita;
 		System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
 		
 	}
 	
 	//metodo per aumentare la dimensione del magazzino
-	public void upgradeDimensioneMagazzino(double costoUpgrade, double patrimonio) {
+	public void upgradeDimensioneMagazzino(double costoUpgrade) {
 		
-		if(costoUpgrade>patrimonio) {
+		if(costoUpgrade>User.patrimonioUtente) {
 			System.out.println("Non hai abbastanza soldi per questo upgrade");
 		}
 		else {
-			patrimonio-=costoUpgrade;
+			User.patrimonioUtente-=costoUpgrade;
 			if(negozio.dimensioneMagazzino % 2 == 0) {
 				negozio.dimensioneMagazzino*=1.5;
 			}
@@ -81,13 +81,13 @@ public class ControllerNegozio {
 	}
 		
 	//metodo per aumentare la dimensione degli scaffali
-	public void upgradeDimensioneScaffali(double costoUpgrade, double patrimonio) {
+	public void upgradeDimensioneScaffali(double costoUpgrade) {
 		
-		if(costoUpgrade>patrimonio) {
+		if(costoUpgrade>User.patrimonioUtente) {
 			System.out.println("Non hai abbastanza soldi per questo upgrade");
 		}
 		else {
-			patrimonio-=costoUpgrade;
+			User.patrimonioUtente-=costoUpgrade;
 			if(negozio.dimensioneScaffali % 2 == 0) {
 				negozio.dimensioneScaffali*=1.5;			}
 			else {
@@ -143,9 +143,36 @@ public class ControllerNegozio {
 			System.out.println("Non puoi permetterti di acquistare il dipendente");
 		}
 		else {
-			User.patrimonioUtente-=User.patrimonioUtente-prezzo;
-			this.negozio.livelliNegozio.replace(nome, 60);
+
+			switch (nome) {
+			
+				case "Magazziniere":
+					negozio.magazziniere = new Magazziniere(negozio);
+					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+					break;
+			
+				case "Cassiere":
+					negozio.cassiere = new Cassiere(negozio);
+					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+					break;
+				
+				case "Commerciante":
+					negozio.commerciante = new Commerciante(negozio);
+					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+					break;
+					
+				default:
+					System.out.println("Errore nell'assunzione del dipendente");
+			}
 		}
+		
+	}
+	
+	public void setNumeroAcquistoCommerciante(int numero) {
+		negozio.commerciante.numeroProdottiAcquisto = numero;
+	}
+	
+	public void spostaProdottiMagazzinoScaffale() {
 		
 	}
 	
