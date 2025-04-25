@@ -109,7 +109,7 @@ public class Cliente implements Runnable{
 							//la richiesta del cliente sarà nel controller, recuperata dai listener
 							if(venduto) {
 								rispostaCliente = risposte[0][(int) Math.random()*4];
-								negozio.controller.vendiProdotto(User.patrimonioUtente);
+								negozio.controller.vendiProdotto();
 							}
 							else {
 								rispostaCliente = risposte[1][(int) Math.random()*4];

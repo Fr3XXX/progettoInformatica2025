@@ -11,16 +11,24 @@ public class Magazziniere implements Runnable{
 	}
 	
 	
+	//Dipendente che quando il numero di prodotti negli scaffali va al di sotto di una certa soglia, sposta i prodotti dal magazzino agli scaffali
 	@Override
 	public void run() {
+		
 		while(true) {
-			
 			if(negozio.prodottiScaffale.size() < SOGLIA) {
+				
+					try {
+						negozio.dipendenti.acquire();
+						negozio.controller.spostaProdottiMagazzinoScaffale();
+						negozio.dipendenti.release();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					
 			}
-			
 		}
-		
+
 	}
 
 }

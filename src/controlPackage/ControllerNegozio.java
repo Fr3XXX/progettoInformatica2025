@@ -1,6 +1,7 @@
 package controlPackage;
 
 import modelPackage.*;
+import viewPackage.*;
 
 public class ControllerNegozio {
 
@@ -79,7 +80,7 @@ public class ControllerNegozio {
 		}
 		
 	}
-		
+-		
 	//metodo per aumentare la dimensione degli scaffali
 	public void upgradeDimensioneScaffali(double costoUpgrade) {
 		
@@ -108,12 +109,17 @@ public class ControllerNegozio {
 	}
 
 	public void sceltaProdotto(int indexDomanda, String richiesta) {
+		
+		int nrRichiesta = (int)Math.random()*49;
 		if(indexDomanda == 0) {
-			richiesta = negozio.prodottiEsistenti[(int)Math.random()*49].nome;
+			richiesta = negozio.prodottiEsistenti[nrRichiesta].nome;
 		}
 		else {
-			richiesta = negozio.prodottiEsistenti[(int)Math.random()*49].specifica;
+			richiesta = negozio.prodottiEsistenti[nrRichiesta].specifica;
 		}
+		
+		negozio.cassiere.vendita = richiesta;
+		negozio.cassiere.indexVendita = indexDomanda;
 	}
 	
 	public boolean checkProdotto(int indexDomanda, String richiesta) {
@@ -174,6 +180,13 @@ public class ControllerNegozio {
 	
 	public void spostaProdottiMagazzinoScaffale() {
 		
+		for(int i=0; negozio.prodottiScaffale.size() < negozio.dimensioneScaffali && negozio.prodottiMagazzino.size() != 0; i++) {
+			
+			negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
+			negozio.prodottiMagazzino.removeLast();
+			
+			Thread.sleep(1000);
+		}
 	}
 	
 }
