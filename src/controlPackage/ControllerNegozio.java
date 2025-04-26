@@ -80,7 +80,7 @@ public class ControllerNegozio {
 		}
 		
 	}
--		
+		
 	//metodo per aumentare la dimensione degli scaffali
 	public void upgradeDimensioneScaffali(double costoUpgrade) {
 		
@@ -177,16 +177,16 @@ public class ControllerNegozio {
 	public void setNumeroAcquistoCommerciante(int numero) {
 		negozio.commerciante.numeroProdottiAcquisto = numero;
 	}
-	
-	public void spostaProdottiMagazzinoScaffale() {
+	/*
+	public void spostaProdottiMagazzinoScaffale(){
 		
 		for(int i=0; negozio.prodottiScaffale.size() < negozio.dimensioneScaffali && negozio.prodottiMagazzino.size() != 0; i++) {
-			
+			//problema causato da te "pizzardi" ;-)
 			negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
 			negozio.prodottiMagazzino.removeLast();
 			
 			Thread.sleep(1000);
 		}
 	}
-	
+	*/
 }

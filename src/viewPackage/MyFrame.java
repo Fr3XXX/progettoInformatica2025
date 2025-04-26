@@ -13,13 +13,13 @@ public class MyFrame extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);// l'utente non puo modificare la grandezza del frame
 		
-
-
+		
+		
 		GamePanel gamePanel = new GamePanel(this);
+		
+		this.add(gamePanel);
 
-		 this.add(gamePanel);
-
-		// window.pack();
+		// window.pack();	
 
 		this.setLocationRelativeTo(null);// la finestra apparira al centro dello schermo
 		this.setUndecorated(true);
