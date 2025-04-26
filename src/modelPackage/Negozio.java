@@ -26,6 +26,7 @@ public abstract class Negozio extends GameObject{
 	public Prodotto[] prodottiEsistenti = new Prodotto[50];
 	public Thread[] clienti = new Thread[8];
 	public Semaphore servito = new Semaphore(0);//serve per gestire i clienti
+	public Semaphore servito2 = new Semaphore(0);//serve per gestire l'interazione cliente-cassiere
 	public Semaphore mutex = new Semaphore(1); //serve per gestire la mutua esclusione legata ai clienti
 	public Semaphore dipendenti = new Semaphore(1); //serve per far lavorare magazziniere e commerciante uno alla volta
 	public Magazziniere magazziniere;
