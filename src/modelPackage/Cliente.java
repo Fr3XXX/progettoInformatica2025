@@ -99,12 +99,18 @@ public class Cliente implements Runnable{
 							negozio.controller.sceltaProdotto(indexDomanda, richiesta);
 							//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
 							//domandaCliente
+							Thread.sleep(500);
+							this.negozio.servito2.release();//il cliente ha scelto il prodotto
 							
 							this.negozio.servito.acquire();
 							//qui aspetta che il venditore clicchi e trovi il prodotto da vendere
 							//nel punto in cui verrà scelto andrà fatto il servito.release() per far andare avanti il cliente
 							
-							venduto = negozio.controller.checkProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
+							
+							
+							
+							/*ANCORA DA CAPIRE PERCHE' SERVE LA VIEW PER CAPIRSI MEGLIO*/
+							venduto = negozio.controller.cercaProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
 							//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
 							//la richiesta del cliente sarà nel controller, recuperata dai listener
 							if(venduto) {
@@ -117,6 +123,7 @@ public class Cliente implements Runnable{
 							
 							//stampa risposta nella view con metodo che prende come parametro rispostaCliente
 							
+							negozio.servito2.release();
 							negozio.mutex.release();//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
 							
 						}		

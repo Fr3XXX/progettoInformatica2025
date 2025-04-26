@@ -6,7 +6,6 @@ import viewPackage.*;
 public class ControllerNegozio {
 
 	public Negozio negozio;
-	public Prodotto prodottoVendere; //verrà recuperato dai listener
 	
 	public ControllerNegozio(Negozio negozio) {
 		this.negozio = negozio;
@@ -45,7 +44,7 @@ public class ControllerNegozio {
 	}
 			
 	//vendita e rimozione dallo scaffale di un prodotto
-	public void vendiProdotto() {
+	public void vendiProdotto(Prodotto prodottoVendere) {
 		
 		negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
 		User.patrimonioUtente+=negozio.prezzoVendita;
@@ -122,27 +121,6 @@ public class ControllerNegozio {
 		negozio.cassiere.indexVendita = indexDomanda;
 	}
 	
-	public boolean checkProdotto(int indexDomanda, String richiesta) {
-		
-//		if(indexDomanda == 0) {
-//			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {			
-//				return true;
-//			}
-//			else {
-//				return false;
-//			}
-//		}
-//		else if(indexDomanda == 1) {
-//			if(richiesta == /*(prodotto scelto dal user, che verrà recuperato dai listener dei bottoni).nome*/) {
-//				return true;
-//			}
-//			else {
-//				return false;
-//			}
-//		}
-		return true;
-	}
-	
 	public void acquistaDipendente(int prezzo, String nome) {
 		//nome è il nome del dipendente che deve corrispondere con la chiave dell'hashmap
 		if(prezzo>User.patrimonioUtente) {
@@ -187,6 +165,38 @@ public class ControllerNegozio {
 			
 			Thread.sleep(1000);
 		}
+	}
+	
+	public boolean cercaProdotto(int indexVendita, String richiesta) {
+		
+		switch(indexVendita) {
+			case 0: 
+				
+				for(Prodotto prodotto : negozio.prodottiScaffale) {
+					if(prodotto.nome.equals(richiesta)) {
+						return true;
+					}
+					Thread.sleep(250);
+				}
+				
+				break;
+			
+			case 1:
+				
+				for(Prodotto prodotto : negozio.prodottiScaffale) {
+					if(prodotto.specifica.equals(richiesta)) {
+						return true;
+					}
+					Thread.sleep(250);
+				}
+				
+				break;
+			
+			default:
+				System.out.println("ERRORE");
+		}
+		
+		return false;
 	}
 	
 }

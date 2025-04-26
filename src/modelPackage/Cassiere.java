@@ -17,11 +17,28 @@ public class Cassiere implements Runnable{
 			
 			try {
 				Thread.sleep(1000);
+				
+				negozio.servito.release();//pronto per servire un cliente
+				
+				negozio.servito2.acquire();//aspetta che il cliente scelga il prodotto
+				
+				if(negozio.controller.cercaProdotto(indexVendita, vendita)) {
+					System.out.println("Prodotto venduto con successo");
+				}
+				else {
+					System.out.println("Il prodotto richiesto non è disponibile");
+				}
+				
+				negozio.servito.release();
+				
+				negozio.servito2.acquire();
+				
 			} catch (InterruptedException e) {
 				
-				e.printStackTrace();
+				e.printStackTrace(); 
 			}
-			negozio.servito.release();
+			
+			
 			
 			
 		}
