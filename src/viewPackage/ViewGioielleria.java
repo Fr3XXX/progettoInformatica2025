@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import modelPackage.GameObject;
 import modelPackage.User;
 
@@ -25,6 +27,10 @@ public class ViewGioielleria extends GameObject {
     JButton closeFrame;
     JButton pulsanteRosso;
     JLabel labelContatore;
+    
+    // Variabili per i frame
+    private JFrame upgradeFrame;
+    private JFrame dipendentiFrame;
 
     public ViewGioielleria(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y) {
         super(gamePanel, path, x, y, size_x, size_y);
@@ -64,17 +70,19 @@ public class ViewGioielleria extends GameObject {
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Pulsante Upgrade
+        // Pulsante Upgrade con listener per aprire il frame piccolo
         JButton upgradeButton = new JButton("UPGRADE");
         stylePulsante(upgradeButton, new Color(255, 165, 0), new Dimension(150, 40));
+        upgradeButton.addActionListener(e -> apriFrameUpgrade());
 
-        // Pulsante Acquista Dipendenti
-        JButton hireButton = new JButton("ACQUISTA DIP.");
-        stylePulsante(hireButton, new Color(75, 0, 130), new Dimension(150, 40));
+        // Pulsante Acquista Dipendenti (rinominato da hireButton a bottoneDipendenti)
+        JButton bottoneDipendenti = new JButton("ACQUISTA DIP.");
+        stylePulsante(bottoneDipendenti, new Color(75, 0, 130), new Dimension(150, 40));
+        bottoneDipendenti.addActionListener(e -> apriFrameDipendenti());
 
         topPanel.add(upgradeButton);
         topPanel.add(Box.createHorizontalStrut(15));
-        topPanel.add(hireButton);
+        topPanel.add(bottoneDipendenti);
         topPanel.add(Box.createHorizontalGlue());
 
         // Pulsante Chiudi
@@ -92,6 +100,140 @@ public class ViewGioielleria extends GameObject {
         frameGioielleria.add(topPanel);
     }
 
+    // Metodo per creare e mostrare il frame di upgrade in basso a destra
+    private void apriFrameUpgrade() {
+        if (upgradeFrame == null) {
+            upgradeFrame = new JFrame("Upgrade Disponibili");
+            upgradeFrame.setSize(350, 250); // Aumentato leggermente le dimensioni
+            upgradeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            upgradeFrame.setLayout(new BoxLayout(upgradeFrame.getContentPane(), BoxLayout.Y_AXIS));
+            
+            // Posizionamento in basso a destra
+            Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            int x = (int) (screenSize.getWidth() - upgradeFrame.getWidth());
+            int y = (int) (screenSize.getHeight() - upgradeFrame.getHeight());
+            upgradeFrame.setLocation(x, y);
+            
+            // Pannello principale con margini
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            // Array di upgrade disponibili
+            String[] upgrades = {
+                "Velocità +10%",
+                "Capacità +15%",
+                "Efficienza +20%",
+                "Qualità +25%",
+                "Produttività +30%"
+            };
+            
+            // Aggiungi ciascun upgrade con pulsante acquista
+            for (String upgrade : upgrades) {
+                JPanel upgradePanel = new JPanel();
+                upgradePanel.setLayout(new BoxLayout(upgradePanel, BoxLayout.X_AXIS));
+                upgradePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+                
+                JLabel upgradeLabel = new JLabel(upgrade);
+                upgradeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                
+                JButton acquistaButton = new JButton("Acquista");
+                acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
+                acquistaButton.setPreferredSize(new Dimension(100, 25));
+                acquistaButton.addActionListener(e -> {
+                    System.out.println("Acquistato upgrade: " + upgradeLabel.getText());
+                    
+                    // Qui puoi aggiungere la logica per l'acquisto dell'upgrade
+                    
+                    
+                    
+                    
+                    
+                });
+                
+                upgradePanel.add(upgradeLabel);
+                upgradePanel.add(Box.createHorizontalGlue());
+                upgradePanel.add(acquistaButton);
+                
+                mainPanel.add(upgradePanel);
+                if (!upgrade.equals(upgrades[upgrades.length - 1])) {
+                    mainPanel.add(Box.createVerticalStrut(5));
+                }
+            }
+            
+            JButton chiudiButton = new JButton("Chiudi");
+            chiudiButton.addActionListener(e -> upgradeFrame.dispose());
+            chiudiButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+            
+            mainPanel.add(Box.createVerticalStrut(15));
+            mainPanel.add(chiudiButton);
+            
+            upgradeFrame.add(mainPanel);
+        }
+        
+        upgradeFrame.setVisible(true);
+    }
+
+    // Metodo per creare e mostrare il frame dei dipendenti
+    private void apriFrameDipendenti() {
+        if (dipendentiFrame == null) {
+            dipendentiFrame = new JFrame("Acquista Dipendenti");
+            dipendentiFrame.setSize(350, 300);
+            dipendentiFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            dipendentiFrame.setLayout(new BoxLayout(dipendentiFrame.getContentPane(), BoxLayout.Y_AXIS));
+            
+            // Posizionamento in basso a destra
+            Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+            int x = (int) (screenSize.getWidth() - dipendentiFrame.getWidth());
+            int y = (int) (screenSize.getHeight() - dipendentiFrame.getHeight());
+            dipendentiFrame.setLocation(x, y);
+            
+            // Pannello principale con margini
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            
+            // Aggiungi 5 dipendenti con relativi pulsanti acquista
+            for (int i = 1; i <= 5; i++) {
+                JPanel dipPanel = new JPanel();
+                dipPanel.setLayout(new BoxLayout(dipPanel, BoxLayout.X_AXIS));
+                dipPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+                
+                JLabel dipLabel = new JLabel("Dipendente " + i);
+                dipLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                
+                JButton acquistaButton = new JButton("Acquista");
+                acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
+                acquistaButton.setPreferredSize(new Dimension(100, 25));
+                acquistaButton.addActionListener(e -> {
+                    System.out.println("Acquistato " + dipLabel.getText());
+                    // Qui puoi aggiungere la logica per l'acquisto
+                });
+                
+                dipPanel.add(dipLabel);
+                dipPanel.add(Box.createHorizontalGlue());
+                dipPanel.add(acquistaButton);
+                
+                mainPanel.add(dipPanel);
+                if (i < 5) {
+                    mainPanel.add(Box.createVerticalStrut(5));
+                }
+            }
+            
+            JButton chiudiButton = new JButton("Chiudi");
+            chiudiButton.addActionListener(e -> dipendentiFrame.dispose());
+            chiudiButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+            
+            mainPanel.add(Box.createVerticalStrut(15));
+            mainPanel.add(chiudiButton);
+            
+            dipendentiFrame.add(mainPanel);
+        }
+        
+        dipendentiFrame.setVisible(true);
+    }
+
+    // Il resto dei metodi rimane invariato
     private void creaPannelloBudget() {
         JPanel budgetPanel = new JPanel();
         budgetPanel.setLayout(new BoxLayout(budgetPanel, BoxLayout.X_AXIS));
@@ -138,17 +280,15 @@ public class ViewGioielleria extends GameObject {
     private void creaPannelloPulsanti() {
         JPanel mainButtonPanel = new JPanel();
         mainButtonPanel.setLayout(new BoxLayout(mainButtonPanel, BoxLayout.X_AXIS));
-        mainButtonPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 0)); // Spostamento a destra
+        mainButtonPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 0));
         
-        // Pannello per pulsante rosso e contatore
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS));
         
-        // Pulsante rosso più grande (50x50 invece di 40x40)
         pulsanteRosso = new JButton();
         pulsanteRosso.setName("pulsanteRosso");
         pulsanteRosso.setBackground(Color.RED);
-        pulsanteRosso.setPreferredSize(new Dimension(50, 50)); // Dimensioni aumentate
+        pulsanteRosso.setPreferredSize(new Dimension(50, 50));
         pulsanteRosso.setMaximumSize(new Dimension(50, 50));
         pulsanteRosso.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         pulsanteRosso.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -161,23 +301,21 @@ public class ViewGioielleria extends GameObject {
             }
         });
 
-        // Label contatore più grande (40x40 invece di 30x30)
         labelContatore = new JLabel("0");
         labelContatore.setName("labelContatore");
         labelContatore.setOpaque(true);
         labelContatore.setBackground(Color.WHITE);
         labelContatore.setForeground(Color.BLACK);
-        labelContatore.setFont(new Font("Arial", Font.BOLD, 18)); // Font più grande
+        labelContatore.setFont(new Font("Arial", Font.BOLD, 18));
         labelContatore.setHorizontalAlignment(JLabel.CENTER);
-        labelContatore.setPreferredSize(new Dimension(40, 40)); // Dimensioni aumentate
+        labelContatore.setPreferredSize(new Dimension(40, 40));
         labelContatore.setMaximumSize(new Dimension(40, 40));
         labelContatore.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         leftPanel.add(pulsanteRosso);
-        leftPanel.add(Box.createHorizontalStrut(10)); // Spaziatura aumentata
+        leftPanel.add(Box.createHorizontalStrut(10));
         leftPanel.add(labelContatore);
         
-        // Pannello centrale per i pulsanti principali
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
@@ -194,7 +332,6 @@ public class ViewGioielleria extends GameObject {
         centerPanel.add(priceButton);
         centerPanel.add(Box.createHorizontalGlue());
 
-        // Aggiunta dei pannelli
         mainButtonPanel.add(leftPanel);
         mainButtonPanel.add(Box.createHorizontalGlue());
         mainButtonPanel.add(centerPanel);

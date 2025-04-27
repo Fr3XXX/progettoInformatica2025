@@ -168,7 +168,6 @@ public class ControllerNegozio {
 	}
 <<<<<<< HEAD
 	*/
-=======
 	
 	public boolean cercaProdotto(int indexVendita, String richiesta) {
 		
@@ -202,5 +201,5 @@ public class ControllerNegozio {
 		return false;
 	}
 	
->>>>>>> b9e102f57285bf4070e9eb9719b2700b4ca7f9f9
+
 }
