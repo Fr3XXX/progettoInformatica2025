@@ -24,11 +24,12 @@ public abstract class Negozio extends GameObject{
 	public ArrayList <Prodotto> prodottiScaffale = new ArrayList <>(); //lista di prodotti in vendita
 	public ArrayList <Prodotto> prodottiMagazzino = new ArrayList <>(); //lista di prodotti in magazzino
 	public Prodotto[] prodottiEsistenti = new Prodotto[50];
-	public Thread[] clienti = new Thread[8];
-	public Semaphore servito = new Semaphore(0);//serve per gestire i clienti
-	public Semaphore servito2 = new Semaphore(0);//serve per gestire l'interazione cliente-cassiere
-	public Semaphore mutex = new Semaphore(1); //serve per gestire la mutua esclusione legata ai clienti
-	public Semaphore dipendenti = new Semaphore(1); //serve per far lavorare magazziniere e commerciante uno alla volta
+	public Cliente[] clienti = new Cliente[8];
+	public boolean servito = false;//serve per gestire i clienti
+	public boolean servito2 = false;//serve per gestire l'interazione cliente-cassiere
+	public boolean trovato = false; //serve per gestire l'interazione cliente-cassiere
+	public boolean daVendere = false; //serve per gestire l'interazione cliente-cassiere
+	public boolean dipendenti = false;//serve per far lavorare magazziniere e commerciante uno alla volta
 	public Magazziniere magazziniere;
 	public Cassiere cassiere;
 	public Commerciante commerciante;
@@ -47,8 +48,9 @@ public abstract class Negozio extends GameObject{
 		this.inserisciProdottiEsistenti();
 		controller= new ControllerNegozio(this);
 		
+		
 		for(int i=0; i<clienti.length; i++) {
-			clienti[i] = new Thread(new Cliente(this));
+			clienti[i] = new Cliente(this, gamePanel);
 		}
 		
 	}

@@ -1,6 +1,8 @@
 package modelPackage;
 
-public class Cliente implements Runnable{
+import viewPackage.GamePanel;
+
+public class Cliente extends GameObject{
 
 	public Negozio negozio;
 	public long tempoAttesaMax;
@@ -10,6 +12,8 @@ public class Cliente implements Runnable{
 	public String richiesta="";
 	public boolean venduto;
 	public boolean stufato; //se il cliente si stufa di stare in fila diventa true
+	public boolean servendo = false;
+	public int checkpoint = 0; //serve per tenere traccia del punto in cui il cliente è arrivato
 	public String rispostaCliente;
 	public Thread tempoInFila;
 	public CodaNegozio coda;
@@ -18,8 +22,9 @@ public class Cliente implements Runnable{
 	public String[][] esclamazioni = new String[2][3];//esclamazioni[0] per prezzo alto, esclamazioni[1] per troppo tempo in fila
 	
 	
-	public Cliente(Negozio negozio) {
-
+	public Cliente(Negozio negozio, GamePanel gamePanel) {
+		
+		super(gamePanel);
 		this.negozio = negozio;
 		
 		this.domande[0][0] = "Buongiorno, potrei sapere se avete disponibile una copia di ";
@@ -66,72 +71,85 @@ public class Cliente implements Runnable{
 		this.esclamazioni[1][1] = "Cosa?! Questo costa più del mio stipendio!";
 		this.esclamazioni[1][2] = "Stanno scherzando, vero? A questo prezzo dovrebbe essere d'oro!";
 		
+
+		
 	}
 	
+	//rendere gameobject, cambiare semafori con degli if
 	@Override
-	public void run() {
-		while(true) {
+	public void update() {
 			
-			if(this.negozio.aperto == true) {
+		if(this.negozio.aperto == true) {
+			if(this.checkpoint==0) {
 				stufato = false;
 				tempoAttesaMax = (long) ((Math.random()*89 + 1)*1000); //tempo di attesa che va da 1 a 90
 				maxSoldiSpendibili = this.negozio.prezzoAcquisto + Math.random()*(this.negozio.prezzoAcquisto/2 - 2) + 2;
 				indexDomanda = (int) Math.random();
 				domandaCliente = this.domande[indexDomanda][(int) Math.random()*9];
-				//Entra nel negozio
-				if(this.negozio.codaNegozio < this.negozio.maxCoda) {
+				this.checkpoint++;
+			}
+			
+			if(this.negozio.codaNegozio < this.negozio.maxCoda) {
+				if(checkpoint==1) {
 					this.negozio.codaNegozio++;
-					try {
-						
-						this.negozio.mutex.acquire();
+					checkpoint++;
+				}
+				if(!negozio.controller.isServendo() || this.servendo) {
+					
 						//qui può andare avanti solo se può essere servito, quindi diventa il primo cliente della fila
 						//qui bisogna abilitare il bottone per servire(btnServire.setEnabled(true));
 						//in modo tale che si possa andare avanti
-						coda = new CodaNegozio(this);
-						tempoInFila = new Thread(coda);
+						if(checkpoint==2) {
+							coda = new CodaNegozio(this);
+							tempoInFila = new Thread(coda);
+							tempoInFila.start();
+							checkpoint++;
+						}
 						
-						tempoInFila.start();
-						
-						this.negozio.servito.acquire(); // quando verrà premuto il bottone per servire, ci sarà il anche servito.release(), 
-						//che permetterà di far andare avanti qui
-						coda.finito = false;
-						if(!stufato) {
-							negozio.controller.sceltaProdotto(indexDomanda, richiesta);
-							//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
-							//domandaCliente
-							Thread.sleep(500);
-							this.negozio.servito2.release();//il cliente ha scelto il prodotto
-							
-							this.negozio.servito.acquire();
-							//qui aspetta che il venditore clicchi e trovi il prodotto da vendere
-							//nel punto in cui verrà scelto andrà fatto il servito.release() per far andare avanti il cliente
-							
-							
-							
-							
-							/*ANCORA DA CAPIRE PERCHE' SERVE LA VIEW PER CAPIRSI MEGLIO*/
-							venduto = negozio.controller.cercaProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
-							//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
-							//la richiesta del cliente sarà nel controller, recuperata dai listener
-							if(venduto) {
-								rispostaCliente = risposte[0][(int) Math.random()*4];
-								negozio.controller.vendiProdotto();
+						if(negozio.servito) { // quando verrà premuto il bottone per servire, ci sarà il anche servito.release(), 
+							//che permetterà di far andare avanti qui
+							coda.finito = false;
+							if(!stufato) {
+								if(checkpoint==3) {
+									negozio.controller.sceltaProdotto(indexDomanda, richiesta);
+									//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
+									//domandaCliente
+									Thread.sleep(500);
+									negozio.servito2 = true;//il cliente ha scelto il prodotto
+								}
+								
+								if(negozio.trovato) {
+									//qui aspetta che il venditore clicchi e trovi il prodotto da vendere
+									//nel punto in cui verrà scelto andrà fatto il servito.release() per far andare avanti il cliente
+											
+											
+
+									/*ANCORA DA CAPIRE PERCHE' SERVE LA VIEW PER CAPIRSI MEGLIO*/
+									venduto = negozio.controller.cercaProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
+									//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
+									//la richiesta del cliente sarà nel controller, recuperata dai listener
+									if(venduto) {
+										rispostaCliente = risposte[0][(int) Math.random()*4];
+										negozio.controller.vendiProdotto(negozio.controller.cercaProdottoVendere(indexDomanda, richiesta));
+									}
+									else {
+										rispostaCliente = risposte[1][(int) Math.random()*4];
+									}
+											
+									//stampa risposta nella view con metodo che prende come parametro rispostaCliente
+											
+									this.servendo=false;
+									negozio.servito2=false;
+									negozio.servito=false;
+									negozio.trovato=false;//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
+											
+								}
+									
 							}
-							else {
-								rispostaCliente = risposte[1][(int) Math.random()*4];
-							}
-							
-							//stampa risposta nella view con metodo che prende come parametro rispostaCliente
-							
-							negozio.servito2.release();
-							negozio.mutex.release();//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
-							
-						}		
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} 
-				}
+						}
+				}	
 			}
-		}	
-	}
+		}
+	}	
+	
 }

@@ -45,11 +45,11 @@ public class ControllerNegozio {
 			
 	//vendita e rimozione dallo scaffale di un prodotto
 	public void vendiProdotto(Prodotto prodottoVendere) {
-		
-		negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
-		User.patrimonioUtente+=negozio.prezzoVendita;
-		System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
-		
+		if(prodottoVendere != null) {
+			negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
+			User.patrimonioUtente+=negozio.prezzoVendita;
+			System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
+		}
 	}
 	
 	//metodo per aumentare la dimensione del magazzino
@@ -136,7 +136,7 @@ public class ControllerNegozio {
 					break;
 			
 				case "Cassiere":
-					negozio.cassiere = new Cassiere(negozio);
+					negozio.cassiere = new Cassiere(negozio, negozio.getGamePanel());
 					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
 					break;
 				
@@ -201,5 +201,43 @@ public class ControllerNegozio {
 		return false;
 	}
 	
+	public Prodotto cercaProdottoVendere(int indexVendita, String richiesta) {
+		switch(indexVendita) {
+		case 0: 
+			
+			for(Prodotto prodotto : negozio.prodottiScaffale) {
+				if(prodotto.nome.equals(richiesta)) {
+					return prodotto;
+				}
+				Thread.sleep(250);
+			}
+			
+			break;
+		
+		case 1:
+			
+			for(Prodotto prodotto : negozio.prodottiScaffale) {
+				if(prodotto.specifica.equals(richiesta)) {
+					return prodotto;
+				}
+				Thread.sleep(250);
+			}
+			
+			break;
+		
+		default:
+			System.out.println("ERRORE");
+		}
+		return null; 
+	}
+	
+	public boolean isServendo() {
+		for(int i=0; i < negozio.clienti.length; i++) {
+			if(negozio.clienti[i].servendo) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
