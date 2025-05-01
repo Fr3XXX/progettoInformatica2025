@@ -64,7 +64,7 @@ public class Cliente extends GameObject{
 		
 		
 		this.esclamazioni[0][0] = "Ma quanto ci vuole? Non si muove mai questa fila!";
-		this.esclamazioni[0][1] = "Dio bon ma è infinita questa coda!";
+		this.esclamazioni[0][1] = "Mamma mia ma è infinita questa coda!";
 		this.esclamazioni[0][2] = "Che stress, non posso aspettare tutto il giorno!";
 		
 		this.esclamazioni[1][0] = "Ma è un furto! Con questi prezzi ci compro una casa!";
@@ -114,7 +114,6 @@ public class Cliente extends GameObject{
 									negozio.controller.sceltaProdotto(indexDomanda, richiesta);
 									//qui verrà stampata la domanda a schermo nella view tramite un metodo che prenderà come parametro
 									//domandaCliente
-									Thread.sleep(500);
 									negozio.servito2 = true;//il cliente ha scelto il prodotto
 								}
 								
@@ -125,12 +124,21 @@ public class Cliente extends GameObject{
 											
 
 									/*ANCORA DA CAPIRE PERCHE' SERVE LA VIEW PER CAPIRSI MEGLIO*/
-									venduto = negozio.controller.cercaProdotto(indexDomanda, richiesta);//qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta 
+									for(int i=0; i<negozio.prodottiScaffale.size(); i++) { //qui verrà controllato se è stato dato il prodotto corretto al cliente in base alla sua richiesta
+										if(negozio.controller.cercaProdotto(indexDomanda, richiesta, i)) {
+											venduto = true;
+										}
+									}
 									//e il cliente deciderà in base a ciò e in base al prezzo se acquistare il prodotto
 									//la richiesta del cliente sarà nel controller, recuperata dai listener
 									if(venduto) {
-										rispostaCliente = risposte[0][(int) Math.random()*4];
-										negozio.controller.vendiProdotto(negozio.controller.cercaProdottoVendere(indexDomanda, richiesta));
+										if(negozio.controller.decideSeComprare(negozio.prezzoAcquisto, negozio.prezzoVendita) ) {
+											rispostaCliente = risposte[0][(int) Math.random()*4];
+											negozio.controller.vendiProdotto(negozio.controller.cercaProdottoVendere(indexDomanda, richiesta));
+										}
+										else {
+											rispostaCliente = esclamazioni[1][(int) Math.random()*2];
+										}
 									}
 									else {
 										rispostaCliente = risposte[1][(int) Math.random()*4];
@@ -142,9 +150,12 @@ public class Cliente extends GameObject{
 									negozio.servito2=false;
 									negozio.servito=false;
 									negozio.trovato=false;//il cliente esce dal negozio dando possibilità al cliente successivo di diventare il primo della fila
-											
+									this.checkpoint=0;		
 								}
 									
+							}
+							else {
+								rispostaCliente = esclamazioni[0][(int) Math.random()*2];
 							}
 						}
 				}	

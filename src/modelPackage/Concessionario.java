@@ -1,10 +1,5 @@
 package modelPackage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.Semaphore;
-
-import controlPackage.ControllerNegozio;
 import viewPackage.GamePanel;
 
 public class Concessionario extends Negozio{
@@ -12,8 +7,8 @@ public class Concessionario extends Negozio{
 	
 	
 
-	public Concessionario() {
-		super(3);
+	public Concessionario(GamePanel gamePanel) {
+		super(3, gamePanel);
 		// TODO Auto-generated constructor stub
 	}
 

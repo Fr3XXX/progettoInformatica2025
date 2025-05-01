@@ -1,9 +1,10 @@
 package modelPackage;
 
+import viewPackage.GamePanel;
 public class Elettronica extends Negozio{
 
-	public Elettronica() {
-		super(2);
+	public Elettronica(GamePanel gamePanel) {
+		super(2, gamePanel);
 		// TODO Auto-generated constructor stub
 	}
 

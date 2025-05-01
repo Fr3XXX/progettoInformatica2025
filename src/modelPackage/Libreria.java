@@ -1,12 +1,12 @@
 package modelPackage;
 
+import viewPackage.GamePanel;
 public class Libreria extends Negozio{
 
 	
-	public Libreria() {
-		super(1);
+	public Libreria(GamePanel gamePanel) {
+		super(1, gamePanel);
 		
-		this.setPrezziBase();
 	}
 
 	@Override

@@ -30,6 +30,7 @@ public abstract class Negozio extends GameObject{
 	public boolean trovato = false; //serve per gestire l'interazione cliente-cassiere
 	public boolean daVendere = false; //serve per gestire l'interazione cliente-cassiere
 	public boolean dipendenti = false;//serve per far lavorare magazziniere e commerciante uno alla volta
+	public boolean dipendenti2 = false; //serve per far lavorare magazziniere e commerciante uno alla volta
 	public Magazziniere magazziniere;
 	public Cassiere cassiere;
 	public Commerciante commerciante;

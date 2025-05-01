@@ -1,5 +1,6 @@
 package controlPackage;
 
+import java.util.Random;
 import modelPackage.*;
 import viewPackage.*;
 
@@ -131,7 +132,7 @@ public class ControllerNegozio {
 			switch (nome) {
 			
 				case "Magazziniere":
-					negozio.magazziniere = new Magazziniere(negozio);
+					negozio.magazziniere = new Magazziniere(negozio, negozio.getGamePanel());
 					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
 					break;
 			
@@ -141,7 +142,7 @@ public class ControllerNegozio {
 					break;
 				
 				case "Commerciante":
-					negozio.commerciante = new Commerciante(negozio);
+					negozio.commerciante = new Commerciante(negozio, negozio.getGamePanel());
 					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
 					break;
 					
@@ -155,43 +156,27 @@ public class ControllerNegozio {
 	public void setNumeroAcquistoCommerciante(int numero) {
 		negozio.commerciante.numeroProdottiAcquisto = numero;
 	}
-	/*
+	
 	public void spostaProdottiMagazzinoScaffale(){
 		
-		for(int i=0; negozio.prodottiScaffale.size() < negozio.dimensioneScaffali && negozio.prodottiMagazzino.size() != 0; i++) {
-			//problema causato da te "pizzardi" ;-)
 			negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
 			negozio.prodottiMagazzino.removeLast();
 			
-			Thread.sleep(1000);
-		}
 	}
-<<<<<<< HEAD
-	*/
 	
-	public boolean cercaProdotto(int indexVendita, String richiesta) {
+	public boolean cercaProdotto(int indexVendita, String richiesta, int i) {
 		
 		switch(indexVendita) {
 			case 0: 
-				
-				for(Prodotto prodotto : negozio.prodottiScaffale) {
-					if(prodotto.nome.equals(richiesta)) {
+					if(negozio.prodottiScaffale.get(i).nome.equals(richiesta)) {
 						return true;
 					}
-					Thread.sleep(250);
-				}
-				
 				break;
 			
 			case 1:
-				
-				for(Prodotto prodotto : negozio.prodottiScaffale) {
-					if(prodotto.specifica.equals(richiesta)) {
+					if(negozio.prodottiScaffale.get(i).specifica.equals(richiesta)) {
 						return true;
 					}
-					Thread.sleep(250);
-				}
-				
 				break;
 			
 			default:
@@ -209,7 +194,6 @@ public class ControllerNegozio {
 				if(prodotto.nome.equals(richiesta)) {
 					return prodotto;
 				}
-				Thread.sleep(250);
 			}
 			
 			break;
@@ -220,7 +204,6 @@ public class ControllerNegozio {
 				if(prodotto.specifica.equals(richiesta)) {
 					return prodotto;
 				}
-				Thread.sleep(250);
 			}
 			
 			break;
@@ -230,6 +213,22 @@ public class ControllerNegozio {
 		}
 		return null; 
 	}
+	
+	public boolean decideSeComprare(double prezzoAcquisto, double prezzoVendita) {
+
+		Random random = new Random();
+		
+        double ricarico = (prezzoVendita - prezzoAcquisto) / prezzoAcquisto;
+
+        if (ricarico <= 0) { 
+        	return true;
+        }
+
+        // La probabilità di rifiuto è proporzionale al ricarico, massimo 70%
+        double probabilitaRifiuto = Math.min(ricarico, 0.7);
+
+        return random.nextDouble() >= probabilitaRifiuto;
+    }
 	
 	public boolean isServendo() {
 		for(int i=0; i < negozio.clienti.length; i++) {
