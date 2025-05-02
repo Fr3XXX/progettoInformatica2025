@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private JFrame window;
 	
 	//view negozi
-	public ViewGioielleria viewGioielleria;
+	public ViewNegozio viewGioielleria;
 
 	public GamePanel(JFrame window) {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));

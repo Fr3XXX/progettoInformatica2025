@@ -18,7 +18,7 @@ import javax.swing.JTextArea;
 import modelPackage.GameObject;
 import modelPackage.User;
 
-public class ViewGioielleria extends GameObject {
+public class ViewNegozio extends GameObject {
 
     private boolean frameVisible = false;
     boolean open = false;
@@ -32,7 +32,7 @@ public class ViewGioielleria extends GameObject {
     private JFrame upgradeFrame;
     private JFrame dipendentiFrame;
 
-    public ViewGioielleria(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y) {
+    public ViewNegozio(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y) {
         super(gamePanel, path, x, y, size_x, size_y);
         this.gamePanel = gamePanel;
     }
@@ -90,7 +90,7 @@ public class ViewGioielleria extends GameObject {
         stylePulsante(closeFrame, new Color(220, 20, 60), new Dimension(150, 40));
         closeFrame.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                ViewGioielleria.this.open = false;
+            	ViewNegozio.this.open = false;
                 frameGioielleria.dispose();
                 SwingUtilities.invokeLater(() -> gamePanel.requestFocusInWindow());
             }

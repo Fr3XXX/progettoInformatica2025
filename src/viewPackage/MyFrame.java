@@ -29,7 +29,14 @@ public class MyFrame extends JFrame{
 		User utente = new User();
 		ControllerUtente controllerUtente = new ControllerUtente(utente);
 		
-		ViewGioielleria viewGioielleria = new ViewGioielleria(gamePanel, "/casa.png", 10, 10, 64, 64);
+		ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 10, 10, 64, 64);
+		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 10, 200, 64, 64);
+		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 10, 400, 64, 64);
+		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 200, 10, 64, 64);
+		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 200, 200, 64, 64);
+		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 200, 400, 64, 64);
+		
+		
 		//sono di prova per avere un negozio su cui fare la view, poi verrannno tolti e aggiunta condizione per comprarli
 		controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
 		Gioielleria gioielleria = (Gioielleria) utente.negoziPosseduti.get(0);

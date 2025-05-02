@@ -4,10 +4,10 @@ import viewPackage.*;
 
 public class Gioielleria extends Negozio{
 
-	ViewGioielleria viewGioielleria;
+	ViewNegozio viewGioielleria;
 	
 
-	public Gioielleria(GamePanel gamePanel, ViewGioielleria viewGioielleria) {
+	public Gioielleria(GamePanel gamePanel, ViewNegozio viewGioielleria) {
 		super(3, gamePanel);
 		this.viewGioielleria = viewGioielleria;
 		
