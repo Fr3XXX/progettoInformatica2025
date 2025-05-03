@@ -1,11 +1,12 @@
 package modelPackage;
 
 import viewPackage.GamePanel;
+import viewPackage.ViewNegozio;
 public class Libreria extends Negozio{
 
 	
-	public Libreria(GamePanel gamePanel) {
-		super(1, gamePanel);
+	public Libreria(GamePanel gamePanel, ViewNegozio view) {
+		super(1, gamePanel, view);
 		
 	}
 

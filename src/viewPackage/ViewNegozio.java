@@ -17,9 +17,12 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import modelPackage.GameObject;
 import modelPackage.User;
+import controlPackage.*;
 
 public class ViewNegozio extends GameObject {
 
+	ControllerNegozio controller;
+	
     private boolean frameVisible = false;
     boolean open = false;
     GamePanel gamePanel;
@@ -27,6 +30,12 @@ public class ViewNegozio extends GameObject {
     JButton closeFrame;
     JButton pulsanteRosso;
     JLabel labelContatore;
+    
+    // Array di upgrade disponibili
+    public String[] upgrades = {
+    	"Lvl 1, Dimensione Magazzino ",
+        "Lvl 1, Dimensione Scaffali "
+    };
     
     // Variabili per i frame
     private JFrame upgradeFrame;
@@ -37,6 +46,12 @@ public class ViewNegozio extends GameObject {
         this.gamePanel = gamePanel;
     }
 
+    public void addController(ControllerNegozio controller) {
+    	this.controller = controller;
+    	upgrades[0] += "- " + controller.getPrezzoUpgradeMagazzino();
+    	upgrades[1] += "- " + controller.getPrezzoUpgradeScaffali();
+    }
+    
     @Override
     public void update() {
         if (InputManager.isMouseOver(this) && InputManager.isMousePressed("left") && !open) {
@@ -76,7 +91,7 @@ public class ViewNegozio extends GameObject {
         upgradeButton.addActionListener(e -> apriFrameUpgrade());
 
         // Pulsante Acquista Dipendenti (rinominato da hireButton a bottoneDipendenti)
-        JButton bottoneDipendenti = new JButton("ACQUISTA DIP.");
+        JButton bottoneDipendenti = new JButton("DIPENDENTI");
         stylePulsante(bottoneDipendenti, new Color(75, 0, 130), new Dimension(150, 40));
         bottoneDipendenti.addActionListener(e -> apriFrameDipendenti());
 
@@ -119,15 +134,6 @@ public class ViewNegozio extends GameObject {
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
             mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             
-            // Array di upgrade disponibili
-            String[] upgrades = {
-                "Velocità +10%",
-                "Capacità +15%",
-                "Efficienza +20%",
-                "Qualità +25%",
-                "Produttività +30%"
-            };
-            
             // Aggiungi ciascun upgrade con pulsante acquista
             for (String upgrade : upgrades) {
                 JPanel upgradePanel = new JPanel();
@@ -141,14 +147,13 @@ public class ViewNegozio extends GameObject {
                 acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
                 acquistaButton.setPreferredSize(new Dimension(100, 25));
                 acquistaButton.addActionListener(e -> {
-                    System.out.println("Acquistato upgrade: " + upgradeLabel.getText());
-                    
-                    // Qui puoi aggiungere la logica per l'acquisto dell'upgrade
-                    
-                    
-                    
-                    
-                    
+                    if(upgrade == upgrades[0]) {
+                    	controller.upgradeDimensioneMagazzino();
+                    }
+                    else {
+                    	controller.upgradeDimensioneScaffali();
+                    }
+                  
                 });
                 
                 upgradePanel.add(upgradeLabel);
@@ -194,21 +199,38 @@ public class ViewNegozio extends GameObject {
             mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             
             // Aggiungi 5 dipendenti con relativi pulsanti acquista
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 0; i < 3; i++) {
+            	final int index = i; // visto che si usa una lamda che prende le variabili per riferimento, conviene fare una copia della variabile in una costante in modo tale di avere la certezza di prendere il valore corretto
                 JPanel dipPanel = new JPanel();
                 dipPanel.setLayout(new BoxLayout(dipPanel, BoxLayout.X_AXIS));
                 dipPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-                
-                JLabel dipLabel = new JLabel("Dipendente " + i);
+                JLabel dipLabel = new JLabel("");
                 dipLabel.setFont(new Font("Arial", Font.BOLD, 14));
                 
-                JButton acquistaButton = new JButton("Acquista");
+                switch(i) {
+                case 0:
+                	dipLabel.setText("Magazziniere - " + controller.getPrezzoDipendenti());
+                	break;
+                case 1:
+                	dipLabel.setText("Cassiere - " + controller.getPrezzoDipendenti());
+                	break;
+                case 2:
+                	dipLabel.setText("Commerciante - " + controller.getPrezzoDipendenti());
+                	break;
+                default:
+                	System.out.println("ERRORE");
+                }
+                JButton acquistaButton = new JButton();
+                if(controller.isAcquistato(i)) {
+                	acquistaButton.setText("Già posseduto");
+                	acquistaButton.setEnabled(false);
+                }
+                else {
+                	acquistaButton.setText("Acquista");
+                }
                 acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
                 acquistaButton.setPreferredSize(new Dimension(100, 25));
-                acquistaButton.addActionListener(e -> {
-                    System.out.println("Acquistato " + dipLabel.getText());
-                    // Qui puoi aggiungere la logica per l'acquisto
-                });
+                acquistaButton.addActionListener(e -> controller.acquistaDipendente(index));
                 
                 dipPanel.add(dipLabel);
                 dipPanel.add(Box.createHorizontalGlue());

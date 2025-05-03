@@ -10,6 +10,7 @@ public class Magazziniere extends GameObject{
 	public int checkpoint = 0;
 	private long lastActionTime = 0;
     private final long DELAY = 250;
+    public int i = 0;
 	
 	
 	public Magazziniere(Negozio negozio, GamePanel gamePanel) {
@@ -21,7 +22,7 @@ public class Magazziniere extends GameObject{
 	//Dipendente che quando il numero di prodotti negli scaffali va al di sotto di una certa soglia, sposta i prodotti dal magazzino agli scaffali
 	@Override
 	public void update() {
-		if(negozio.dipendenti2) {
+		if(negozio.isDipendenti()) {
 			long now = System.currentTimeMillis();
 			if(checkpoint==0) {
 				if(negozio.prodottiScaffale.size() < SOGLIA) {
@@ -29,15 +30,17 @@ public class Magazziniere extends GameObject{
 				}
 			}
 			if(checkpoint==1) {
-				negozio.dipendenti=false;
-				if (now - lastActionTime >= DELAY && negozio.trovato==false && i< negozio.prodottiScaffale.size()) {
-					if(negozio.prodottiMagazzino.size() > 0 && negozio.prodottiScaffale.size() < negozio.dimensioneScaffali) {
-						negozio.controller.spostaProdottiMagazzinoScaffale();
+				negozio.setDipendenti(false);
+				if (now - lastActionTime >= DELAY && negozio.isTrovato()==false && i< negozio.prodottiScaffale.size()) {
+					if(negozio.prodottiMagazzino.size() > 0 && negozio.prodottiScaffale.size() < negozio.getDimensioneScaffali()) {
+						negozio.getController().spostaProdottiMagazzinoScaffale();
+						i++;
 					}
 					else {
 						finito = true;
 						checkpoint = 0;
-						negozio.dipendenti = true;
+						i = 0;
+						negozio.setDipendenti(true);
 					}
 					
 		        }

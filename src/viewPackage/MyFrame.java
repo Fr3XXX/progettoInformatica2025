@@ -19,7 +19,7 @@ public class MyFrame extends JFrame{
 		
 		this.add(gamePanel);
 
-		// window.pack();	
+		
 
 		this.setLocationRelativeTo(null);// la finestra apparira al centro dello schermo
 		this.setUndecorated(true);

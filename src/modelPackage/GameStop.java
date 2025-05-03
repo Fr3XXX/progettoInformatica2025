@@ -1,10 +1,11 @@
 package modelPackage;
 
 import viewPackage.GamePanel;
+import viewPackage.ViewNegozio;
 public class GameStop extends Negozio{
 
-	public GameStop(GamePanel gamePanel) {
-		super(1, gamePanel);
+	public GameStop(GamePanel gamePanel, ViewNegozio view) {
+		super(1, gamePanel, view);
 		// TODO Auto-generated constructor stub
 	}
 
