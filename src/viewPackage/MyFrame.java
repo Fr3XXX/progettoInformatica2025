@@ -1,61 +1,78 @@
 package viewPackage;
 
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyChangeListener;
 import modelPackage.*;
 import controlPackage.*;
 
-
-public class MyFrame extends JFrame{
-	
-	
-	public MyFrame(String titolo) {
-		super(titolo);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setResizable(false);// l'utente non puo modificare la grandezza del frame
+public class MyFrame extends JFrame {
+    
+    private JLabel patrimonioLabel;
+    private User utente;
+    
+    public MyFrame(String titolo) {
+        super(titolo);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        
+        // Configura il layout principale
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        
+        GamePanel gamePanel = new GamePanel(this);
+        
+        // Crea e configura il label del patrimonio
+        patrimonioLabel = new JLabel("PATRIMONIO TOT: 0$");
+        patrimonioLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        patrimonioLabel.setForeground(Color.YELLOW);
+        patrimonioLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        patrimonioLabel.setOpaque(true);
+        patrimonioLabel.setBackground(new Color(0, 0, 0, 150));
+        
+        // Aggiungi i componenti
+        mainPanel.add(patrimonioLabel, BorderLayout.NORTH);
+        mainPanel.add(gamePanel, BorderLayout.CENTER);
+        this.add(mainPanel);
+        
+        // Configurazione finestra
+        this.setLocationRelativeTo(null);
+        this.setUndecorated(true);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setVisible(true);
+        
+        // Inizializza utente e controller
+        utente = new User();
+        ControllerUtente controllerUtente = new ControllerUtente(utente);
+        
+//        // Configura listener per aggiornamenti
+//        utente.addPropertyChangeListener(e -> {
+//            if("patrimonioUtente".equals(e.getPropertyName())) {
+//                SwingUtilities.invokeLater(() -> {
+//                    patrimonioLabel.setText("PATRIMONIO TOT: " + e.getNewValue() + "$");
+//                });
+//            }
+//        });
+        
+        // Esempio negozio
+        ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 50, 50, 64, 64);
 		
 		
-		
-		GamePanel gamePanel = new GamePanel(this);
-		
-		this.add(gamePanel);
-
-		
-
-		this.setLocationRelativeTo(null);// la finestra apparira al centro dello schermo
-		this.setUndecorated(true);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		this.setVisible(true);
-		
-		User utente = new User();
-		ControllerUtente controllerUtente = new ControllerUtente(utente);
+		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 1300, 50, 64, 64);
 		
 		
-		ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 10, 10, 64, 64);
+		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 650, 500, 64, 64);
 		
 		
-		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 10, 200, 64, 64);
+		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 650, 50, 64, 64);
 		
 		
-		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 10, 400, 64, 64);
+		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 1300, 500, 64, 64);
 		
 		
-		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 200, 10, 64, 64);
+		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 50, 500, 64, 64);
 		
-		
-		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 200, 200, 64, 64);
-		
-		
-		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 200, 400, 64, 64);
-		
-		
-		//sono di prova per avere un negozio su cui fare la view, poi verrannno tolti e aggiunta condizione per comprarli
-		controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
-		Gioielleria gioielleria = (Gioielleria) utente.negoziPosseduti.get(0);
-		
-		
-		//parte gioco
-		gamePanel.startGameThread();
-		
-		
-	}
+        controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
+        
+        gamePanel.startGameThread();
+    }
 }

@@ -1,3 +1,4 @@
+
 package viewPackage;
 
 import java.awt.Color;
@@ -14,9 +15,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
 import modelPackage.GameObject;
 import modelPackage.User;
 import controlPackage.*;
@@ -43,7 +44,14 @@ public class ViewNegozio extends GameObject {
     // Variabili per i frame
     private JFrame upgradeFrame;
     private JFrame dipendentiFrame;
+    private JFrame macranoFrame;
     
+    // Variabili per la finestra Macrano
+    private JButton acquistaButton;
+    private JLabel numeroProditLabel;
+    private int numeroProdit = 0;
+    
+    // Altre variabili di interfaccia
     private JPanel topPanel;
     private JButton upgradeButton;
     private JButton bottoneDipendenti;
@@ -58,10 +66,6 @@ public class ViewNegozio extends GameObject {
     private JPanel centerPanel;
     private JButton buyButton;
     private JButton priceButton;
-    private JPanel upgradeMainPanel;
-    private JButton upgradeChiudiButton;
-    private JPanel dipendentiMainPanel;
-    private JButton dipendentiChiudiButton;
 
     public ViewNegozio(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y) {
         super(gamePanel, path, x, y, size_x, size_y);
@@ -86,9 +90,9 @@ public class ViewNegozio extends GameObject {
             }
         }
         else if(open){
-            
-        	this.aggiornaValori();
-            
+            if(upgradeCreato) {
+                this.aggiornaValoriFrameUpgrade();
+            }
         }
         super.update();
     }
@@ -112,7 +116,6 @@ public class ViewNegozio extends GameObject {
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Pulsante Upgrade con listener per aprire il frame piccolo
         upgradeButton = new JButton("UPGRADE");
         stylePulsante(upgradeButton, new Color(255, 165, 0), new Dimension(150, 40));
         upgradeButton.addActionListener(new ActionListener() {
@@ -122,7 +125,6 @@ public class ViewNegozio extends GameObject {
             }
         });
 
-        // Pulsante Acquista Dipendenti
         bottoneDipendenti = new JButton("DIPENDENTI");
         stylePulsante(bottoneDipendenti, new Color(75, 0, 130), new Dimension(150, 40));
         bottoneDipendenti.addActionListener(new ActionListener() {
@@ -137,7 +139,6 @@ public class ViewNegozio extends GameObject {
         topPanel.add(bottoneDipendenti);
         topPanel.add(Box.createHorizontalGlue());
 
-        // Pulsante Chiudi
         closeFrame = new JButton("CHIUDI");
         stylePulsante(closeFrame, new Color(220, 20, 60), new Dimension(150, 40));
         closeFrame.addMouseListener(new MouseAdapter() {
@@ -168,56 +169,7 @@ public class ViewNegozio extends GameObject {
         int x = (int) (screenSize.getWidth() - upgradeFrame.getWidth());
         int y = (int) (screenSize.getHeight() - upgradeFrame.getHeight());
         upgradeFrame.setLocation(x, y);
-        upgradeMainPanel = new JPanel();
-        upgradeMainPanel.setLayout(new BoxLayout(upgradeMainPanel, BoxLayout.Y_AXIS));
-        upgradeMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-        for (String upgrade : upgrades) {
-            JPanel upgradePanel = new JPanel();
-            upgradePanel.setLayout(new BoxLayout(upgradePanel, BoxLayout.X_AXIS));
-            upgradePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-            
-            JLabel upgradeLabel = new JLabel(upgrade);
-            upgradeLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            
-            JButton acquistaButton = new JButton("Acquista");
-            acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
-            acquistaButton.setPreferredSize(new Dimension(100, 25));
-            acquistaButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if(upgrade == upgrades[0]) {
-                        controller.upgradeDimensioneMagazzino();
-                    }
-                    else {
-                        controller.upgradeDimensioneScaffali();
-                    }
-                }
-            });
-            
-            upgradePanel.add(upgradeLabel);
-            upgradePanel.add(Box.createHorizontalGlue());
-            upgradePanel.add(acquistaButton);
-            
-            upgradeMainPanel.add(upgradePanel);
-            if (!upgrade.equals(upgrades[upgrades.length - 1])) {
-                upgradeMainPanel.add(Box.createVerticalStrut(5));
-            }
-        }
         
-        upgradeChiudiButton = new JButton("Chiudi");
-        upgradeChiudiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                upgradeFrame.dispose();
-            }
-        });
-        upgradeChiudiButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        
-        upgradeMainPanel.add(Box.createVerticalStrut(15));
-        upgradeMainPanel.add(upgradeChiudiButton);
-        
-        upgradeFrame.add(upgradeMainPanel);
         upgradeFrame.setVisible(true);
     }
 
@@ -233,7 +185,7 @@ public class ViewNegozio extends GameObject {
             int y = (int) (screenSize.getHeight() - dipendentiFrame.getHeight());
             dipendentiFrame.setLocation(x, y);
             
-            dipendentiMainPanel = new JPanel();
+            JPanel dipendentiMainPanel = new JPanel();
             dipendentiMainPanel.setLayout(new BoxLayout(dipendentiMainPanel, BoxLayout.Y_AXIS));
             dipendentiMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             
@@ -286,7 +238,7 @@ public class ViewNegozio extends GameObject {
                 }
             }
             
-            dipendentiChiudiButton = new JButton("Chiudi");
+            JButton dipendentiChiudiButton = new JButton("Chiudi");
             dipendentiChiudiButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -393,6 +345,12 @@ public class ViewNegozio extends GameObject {
 
         buyButton = new JButton("ACQUISTA LIBRI");
         stylePulsanteCentrato(buyButton, new Color(50, 150, 50));
+        buyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                apriFinestraAcquista();
+            }
+        });
 
         priceButton = new JButton("IMPOSTA PREZZO");
         stylePulsanteCentrato(priceButton, new Color(70, 70, 200));
@@ -410,6 +368,83 @@ public class ViewNegozio extends GameObject {
 
         frameGioielleria.add(mainButtonPanel);
         frameGioielleria.add(Box.createVerticalStrut(20));
+    }
+
+    private void apriFinestraAcquista() {
+        macranoFrame = new JFrame("FINESTRA ACQUISTA");
+        macranoFrame.setSize(350, 200);
+        macranoFrame.setLayout(new BoxLayout(macranoFrame.getContentPane(), BoxLayout.Y_AXIS));
+        macranoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        macranoFrame.setLocationRelativeTo(frameGioielleria);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Titolo "PRODOTTI"
+        JLabel proditLabel = new JLabel("PRODOTTI");
+        proditLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        proditLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        mainPanel.add(proditLabel);
+        mainPanel.add(Box.createVerticalStrut(10));
+
+        // Pannello per il totale
+        JPanel totalePanel = new JPanel();
+        totalePanel.setLayout(new BoxLayout(totalePanel, BoxLayout.X_AXIS));
+        
+        numeroProditLabel = new JLabel("TOTALE: " + numeroProdit);
+        numeroProditLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        totalePanel.add(numeroProditLabel);
+        totalePanel.add(Box.createHorizontalGlue());
+        
+        mainPanel.add(totalePanel);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Pannello combinato quantità + acquista
+        JPanel quantitaPanel = new JPanel();
+        quantitaPanel.setLayout(new BoxLayout(quantitaPanel, BoxLayout.X_AXIS));
+        
+        JLabel quantitaLabel = new JLabel("Quantità:");
+        quantitaLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        
+        JTextArea quantitaField = new JTextArea("1");
+        quantitaField.setFont(new Font("Arial", Font.PLAIN, 12));
+        quantitaField.setPreferredSize(new Dimension(50, 20));
+        quantitaField.setMaximumSize(new Dimension(50, 20));
+        
+        acquistaButton = new JButton("ACQUISTA");
+        acquistaButton.setFont(new Font("Arial", Font.BOLD, 14));
+        acquistaButton.setPreferredSize(new Dimension(120, 30));
+        acquistaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int quantita = Integer.parseInt(quantitaField.getText());
+                    aggiornaNumeroProdotti();
+                } catch (NumberFormatException ex) {
+                    System.out.println("Inserire un numero valido");
+                }
+            }
+        });
+
+        quantitaPanel.add(quantitaLabel);
+        quantitaPanel.add(Box.createHorizontalStrut(5));
+        quantitaPanel.add(quantitaField);
+        quantitaPanel.add(Box.createHorizontalStrut(15));
+        quantitaPanel.add(acquistaButton);
+        quantitaPanel.add(Box.createHorizontalGlue());
+
+        mainPanel.add(quantitaPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+
+        macranoFrame.add(mainPanel);
+        macranoFrame.setVisible(true);
+    }
+
+    private void aggiornaNumeroProdotti() {
+                if (numeroProditLabel != null) {
+            numeroProditLabel.setText("TOTALE: " + numeroProdit);
+        }
     }
 
     private void stylePulsante(JButton button, Color backgroundColor, Dimension size) {
@@ -461,8 +496,62 @@ public class ViewNegozio extends GameObject {
     }
     
     private void aggiornaValori() {
-        pulsanteRosso.setBackground(Color.RED);
+        aggiornaValoriFrameUpgrade();
+        creaPannelloPulsanti();
     }
     
-    
+    private void aggiornaValoriFrameUpgrade() {
+        if(upgradeCreato) {
+            JPanel upgradeMainPanel = new JPanel();
+            upgradeMainPanel.setLayout(new BoxLayout(upgradeMainPanel, BoxLayout.Y_AXIS));
+            upgradeMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+            for (String upgrade : upgrades) {
+                JPanel upgradePanel = new JPanel();
+                upgradePanel.setLayout(new BoxLayout(upgradePanel, BoxLayout.X_AXIS));
+                upgradePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+                
+                JLabel upgradeLabel = new JLabel(upgrade);
+                upgradeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                
+                JButton acquistaButton = new JButton("Acquista");
+                acquistaButton.setFont(new Font("Arial", Font.PLAIN, 12));
+                acquistaButton.setPreferredSize(new Dimension(100, 25));
+                acquistaButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(upgrade == upgrades[0]) {
+                            controller.upgradeDimensioneMagazzino();
+                        }
+                        else {
+                            controller.upgradeDimensioneScaffali();
+                        }
+                    }
+                });
+                
+                upgradePanel.add(upgradeLabel);
+                upgradePanel.add(Box.createHorizontalGlue());
+                upgradePanel.add(acquistaButton);
+                
+                upgradeMainPanel.add(upgradePanel);
+                if (!upgrade.equals(upgrades[upgrades.length - 1])) {
+                    upgradeMainPanel.add(Box.createVerticalStrut(5));
+                }
+            }
+            
+            JButton upgradeChiudiButton = new JButton("Chiudi");
+            upgradeChiudiButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    upgradeFrame.dispose();
+                }
+            });
+            upgradeChiudiButton.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+            
+            upgradeMainPanel.add(Box.createVerticalStrut(15));
+            upgradeMainPanel.add(upgradeChiudiButton);
+            
+            upgradeFrame.add(upgradeMainPanel);    
+        }
+    }
 }
