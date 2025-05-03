@@ -24,12 +24,12 @@ public class Cassiere extends GameObject{
 
         // Altrimenti non fa nulla questo frame
 
-		negozio.servito = true;//pronto per servire un cliente
+		negozio.setServito(true);//pronto per servire un cliente
 				
-		if(negozio.servito2) {//aspetta che il cliente scelga il prodotto	
+		if(negozio.isServito2()) {//aspetta che il cliente scelga il prodotto	
 			
 			if(i>=negozio.prodottiScaffale.size()) {
-				negozio.trovato=true;
+				negozio.setTrovato(true);
 			}
 			
 		}

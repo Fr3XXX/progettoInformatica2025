@@ -18,19 +18,19 @@ public class Commerciante extends GameObject{
 	//Dipendente che compra i prodotti per il negozio quando i prodotti in magazzino vanno sotto una certa soglia
 	@Override
 	public void update() {
-		if(negozio.dipendenti) {
+		if(negozio.isDipendenti()) {
 			if(checkpoint==0) {
 				if(negozio.prodottiMagazzino.size() < SOGLIA) {
 					checkpoint++;
 				}
 			}
 			if(checkpoint==1) {
-				negozio.dipendenti2 = false;
-				if(negozio.prezzoAcquisto*numeroProdottiAcquisto < User.patrimonioUtente) {
-					negozio.controller.acquistaProdottiMagazzino(numeroProdottiAcquisto);
-					User.patrimonioUtente-=negozio.prezzoAcquisto*numeroProdottiAcquisto;
+				negozio.setDipendenti2(false);
+				if(negozio.getPrezzoAcquisto()*numeroProdottiAcquisto < User.patrimonioUtente) {
+					negozio.getController().acquistaProdottiMagazzino(numeroProdottiAcquisto);
+					User.patrimonioUtente-=negozio.getPrezzoAcquisto()*numeroProdottiAcquisto;
 				}
-				negozio.dipendenti2 = true;
+				negozio.setDipendenti2(true);
 			}
 		
 		}

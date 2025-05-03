@@ -1,15 +1,12 @@
 package modelPackage;
 
-import viewPackage.*;
+import viewPackage.GamePanel;
+import viewPackage.ViewNegozio;
 
-public class Gioielleria extends Negozio{
-
-	ViewNegozio viewGioielleria;
-	
+public class Gioielleria extends Negozio{	
 
 	public Gioielleria(GamePanel gamePanel, ViewNegozio viewGioielleria) {
-		super(3, gamePanel);
-		this.viewGioielleria = viewGioielleria;
+		super(3, gamePanel, viewGioielleria);
 		
 	}
 

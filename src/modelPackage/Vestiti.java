@@ -1,10 +1,11 @@
 package modelPackage;
 
 import viewPackage.GamePanel;
+import viewPackage.ViewNegozio;
 public class Vestiti extends Negozio{
 
-	public Vestiti(GamePanel gamePanel) {
-		super(2, gamePanel);
+	public Vestiti(GamePanel gamePanel, ViewNegozio view) {
+		super(2, gamePanel, view);
 		
 		// TODO Auto-generated constructor stub
 	}

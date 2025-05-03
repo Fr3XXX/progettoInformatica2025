@@ -7,9 +7,11 @@ import viewPackage.*;
 public class ControllerNegozio {
 
 	public Negozio negozio;
+	public ViewNegozio view;
 	
-	public ControllerNegozio(Negozio negozio) {
+	public ControllerNegozio(Negozio negozio, ViewNegozio view) {
 		this.negozio = negozio;
+		this.view = view;
 	}
 	
 	public void acquistaNegozio(double prezzo) {
@@ -17,21 +19,21 @@ public class ControllerNegozio {
 	}
 	
 	public void aperturaNegozio() {
-		if(!negozio.aperto) {
-			negozio.aperto=true;
+		if(!negozio.isAperto()) {
+			negozio.setAperto(true);;
 		}
 		else {
-			negozio.aperto=false;
+			negozio.setAperto(false);
 		}
 	}
 	
 	public void acquistaProdottiMagazzino(int nProdotti) {
 			
-		if(User.patrimonioUtente >= nProdotti*negozio.prezzoAcquisto) {			
+		if(User.patrimonioUtente >= nProdotti*negozio.getPrezzoAcquisto()) {			
 			if((50 - negozio.prodottiMagazzino.size()) >= nProdotti) {
 				for(int i=0; i<nProdotti; i++) {
-					User.patrimonioUtente-=negozio.prezzoAcquisto;			
-							negozio.prodottiMagazzino.add(negozio.prodottiEsistenti[(int) Math.random()*49]);
+					User.patrimonioUtente-=negozio.getPrezzoAcquisto();			
+							negozio.prodottiMagazzino.add(negozio.prodottiEsistenti[(int)( Math.random()*49)]);
 				}	
 			}
 			else {
@@ -48,69 +50,82 @@ public class ControllerNegozio {
 	public void vendiProdotto(Prodotto prodottoVendere) {
 		if(prodottoVendere != null) {
 			negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
-			User.patrimonioUtente+=negozio.prezzoVendita;
+			User.patrimonioUtente+=negozio.getPrezzoVendita();
 			System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
 		}
 	}
 	
 	//metodo per aumentare la dimensione del magazzino
-	public void upgradeDimensioneMagazzino(double costoUpgrade) {
+	public void upgradeDimensioneMagazzino() {
 		
-		if(costoUpgrade>User.patrimonioUtente) {
+		if(negozio.getPrezzoUpgradeMagazzino()>User.patrimonioUtente) {
 			System.out.println("Non hai abbastanza soldi per questo upgrade");
 		}
 		else {
-			User.patrimonioUtente-=costoUpgrade;
-			if(negozio.dimensioneMagazzino % 2 == 0) {
-				negozio.dimensioneMagazzino*=1.5;
+			User.patrimonioUtente-=negozio.getPrezzoUpgradeMagazzino();
+			if(negozio.getDimensioneMagazzino() % 2 == 0) {
+				int nuovoValore = (int) (negozio.getDimensioneMagazzino()*1.5);
+				negozio.setDimensioneMagazzino(nuovoValore);
 			}
 			else {
-				negozio.dimensioneMagazzino*=2;//se il numero è dispari moltiplico per 2 per evitare che vengano numeri con la virgola
+				negozio.setDimensioneMagazzino(negozio.getDimensioneMagazzino()*2);//se il numero è dispari moltiplico per 2 per evitare che vengano numeri con la virgola
 			}
 			
-			//aggiorno i valori dell'HashMap dei livelli
-			negozio.livelliNegozio.replace("Magazzino", (negozio.livelliNegozio.get("Magazzino") + 1));
-			
-			if((negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) % 2 == 0) {
-				negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) / 2);
-			}
-			else {
-				negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali") - 1) / 2);
-			}
+			System.out.println("Dimensione magazzino aumentata a " + negozio.getDimensioneScaffali());
+			this.aggiornaLivelloTotale();
+			int nuovoValore = (int) (negozio.getPrezzoUpgradeMagazzino()*1.5);
+			negozio.setPrezzoUpgradeMagazzino(nuovoValore);
+			this.view.upgrades[0] = "Lvl" + this.negozio.livelliNegozio.get("Magazzino") + ", Dimensione Magazzino - " + negozio.getPrezzoUpgradeMagazzino();
 		}
 		
 	}
 		
 	//metodo per aumentare la dimensione degli scaffali
-	public void upgradeDimensioneScaffali(double costoUpgrade) {
+	public void upgradeDimensioneScaffali() {
 		
-		if(costoUpgrade>User.patrimonioUtente) {
+		if(negozio.getPrezzoUpgradeScaffali()>User.patrimonioUtente) {
 			System.out.println("Non hai abbastanza soldi per questo upgrade");
 		}
 		else {
-			User.patrimonioUtente-=costoUpgrade;
-			if(negozio.dimensioneScaffali % 2 == 0) {
-				negozio.dimensioneScaffali*=1.5;			}
+			User.patrimonioUtente-=negozio.getPrezzoUpgradeScaffali();
+			if(negozio.getDimensioneScaffali() % 2 == 0) {
+				int nuovoValore = (int) (negozio.getDimensioneScaffali()*1.5);
+				negozio.setDimensioneScaffali(nuovoValore);			}
 			else {
-				negozio.dimensioneScaffali*=2;//se il numero è dispari moltiplico per 2 per evitare che vengano numeri con la virgola
+				negozio.setDimensioneScaffali(negozio.getDimensioneScaffali()*2);//se il numero è dispari moltiplico per 2 per evitare che vengano numeri con la virgola
 			}
-			
-			//aggiorno i valori dell'HashMap dei livelli
-			negozio.livelliNegozio.replace("Scaffali", (negozio.livelliNegozio.get("Scaffali") + 1));
-			
-			if((negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) % 2 == 0) {
-				negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) / 2);
-			}
-			else {
-				negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali") - 1) / 2);
-			}
+			System.out.println("Dimensione scaffali aumentata a " + negozio.getDimensioneScaffali());
+			int nuovoValore = (int) (negozio.getPrezzoUpgradeMagazzino()*1.5);
+			negozio.setPrezzoUpgradeScaffali(nuovoValore);
+			this.view.upgrades[1] = "Lvl" + this.negozio.livelliNegozio.get("Scaffali") + ", Dimensione Scaffali - " + negozio.getPrezzoUpgradeScaffali();
 		}
 		
+	}
+	
+	public double getPrezzoUpgradeScaffali() {
+		return negozio.getPrezzoUpgradeScaffali();
+	}
+	
+	public double getPrezzoUpgradeMagazzino() {
+		return negozio.getPrezzoUpgradeMagazzino();
+	}
+	
+	//aggiorno i valori dell'HashMap dei livelli
+	public void aggiornaLivelloTotale() {
+
+		negozio.livelliNegozio.replace("Scaffali", (negozio.livelliNegozio.get("Scaffali") + 1));
+		
+		if((negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) % 2 == 0) {
+			negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) / 2);
+		}
+		else {
+			negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali") - 1) / 2);
+		}
 	}
 
 	public void sceltaProdotto(int indexDomanda, String richiesta) {
 		
-		int nrRichiesta = (int)Math.random()*49;
+		int nrRichiesta = (int)(Math.random()*49);
 		if(indexDomanda == 0) {
 			richiesta = negozio.prodottiEsistenti[nrRichiesta].nome;
 		}
@@ -118,32 +133,38 @@ public class ControllerNegozio {
 			richiesta = negozio.prodottiEsistenti[nrRichiesta].specifica;
 		}
 		
-		negozio.cassiere.vendita = richiesta;
-		negozio.cassiere.indexVendita = indexDomanda;
+		negozio.getCassiere().vendita = richiesta;
+		negozio.getCassiere().indexVendita = indexDomanda;
 	}
 	
-	public void acquistaDipendente(int prezzo, String nome) {
-		//nome è il nome del dipendente che deve corrispondere con la chiave dell'hashmap
-		if(prezzo>User.patrimonioUtente) {
+	public void acquistaDipendente(int i) {
+
+		if(negozio.getPrezzoDipendenti()>User.patrimonioUtente) {
 			System.out.println("Non puoi permetterti di acquistare il dipendente");
 		}
 		else {
 
-			switch (nome) {
+			switch (i) {
 			
-				case "Magazziniere":
-					negozio.magazziniere = new Magazziniere(negozio, negozio.getGamePanel());
-					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+				case 0:
+					negozio.setMagazziniere(new Magazziniere(negozio, negozio.getGamePanel()));
+					negozio.dipendentiAcquistati[0] = true;
+					User.patrimonioUtente-=negozio.getPrezzoDipendenti();
+					System.out.println("Assunto magazziniere");
 					break;
-			
-				case "Cassiere":
-					negozio.cassiere = new Cassiere(negozio, negozio.getGamePanel());
-					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+
+				case 1:
+					negozio.setCassiere(new Cassiere(negozio, negozio.getGamePanel()));
+					negozio.dipendentiAcquistati[1] = true;
+					User.patrimonioUtente-=negozio.getPrezzoDipendenti();
+					System.out.println("Assunto cassiere");
 					break;
 				
-				case "Commerciante":
-					negozio.commerciante = new Commerciante(negozio, negozio.getGamePanel());
-					User.patrimonioUtente-=User.patrimonioUtente-prezzo;
+				case 2:
+					negozio.setCommerciante(new Commerciante(negozio, negozio.getGamePanel()));
+					negozio.dipendentiAcquistati[2] = true;
+					User.patrimonioUtente-=negozio.getPrezzoDipendenti();
+					System.out.println("Assunto commerciante");
 					break;
 					
 				default:
@@ -153,15 +174,22 @@ public class ControllerNegozio {
 		
 	}
 	
+	public boolean isAcquistato(int i) {
+		return negozio.dipendentiAcquistati[i];
+	}
+	public String getPrezzoDipendenti() {
+		return ((Double)negozio.getPrezzoDipendenti()).toString();
+	}
+	
 	public void setNumeroAcquistoCommerciante(int numero) {
-		negozio.commerciante.numeroProdottiAcquisto = numero;
+		negozio.getCommerciante().numeroProdottiAcquisto = numero;
 	}
 	
 	public void spostaProdottiMagazzinoScaffale(){
-		
-			negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
-			negozio.prodottiMagazzino.removeLast();
-			
+			if(negozio.prodottiMagazzino.size() > 0) {
+				negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
+				negozio.prodottiMagazzino.removeLast();
+			}	
 	}
 	
 	public boolean cercaProdotto(int indexVendita, String richiesta, int i) {
