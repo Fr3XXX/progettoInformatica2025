@@ -43,24 +43,22 @@ public class MyFrame extends JFrame {
         utente = new User();
         ControllerUtente controllerUtente = new ControllerUtente(utente);
         
-        ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 50, 50, 64, 64, this);
+        ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 50, 50, 64, 64, this, controllerUtente, "Vestiti");
 		
 		
-		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 1300, 50, 64, 64, this);
+		ViewNegozio viewLibreria= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 1300, 50, 64, 64, this, controllerUtente, "Libreria");
 		
 		
-		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 650, 500, 64, 64, this);
+		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 650, 500, 64, 64, this, controllerUtente, "Elettronica");
 		
 		
-		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 650, 50, 64, 64, this);
+		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 650, 50, 64, 64, this, controllerUtente, "Gioielleria");
 		
 		
-		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 1300, 500, 64, 64, this);
+		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 1300, 500, 64, 64, this, controllerUtente, "Concessionario");
 		
 		
-		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 50, 500, 64, 64, this);
-		
-        controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
+		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 50, 500, 64, 64, this, controllerUtente, "GameStop");
         
         gamePanel.startGameThread();
         

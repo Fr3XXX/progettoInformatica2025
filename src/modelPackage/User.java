@@ -9,6 +9,7 @@ public class User {
 	public static double patrimonioUtente;
 	public ArrayList<Negozio> negoziPosseduti = new ArrayList<Negozio>();
 	public ControllerUtente userController;
+	public int[] prezziNegozi = { 50000, 100000, 175000};
 	
 	public User() {
 		

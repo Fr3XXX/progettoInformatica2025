@@ -10,4 +10,7 @@ public class Prodotto {
 		this.specifica = specifica;
 	}
 	
+	public String toString() {
+		return this.nome + " - " + this.specifica;
+	}
 }

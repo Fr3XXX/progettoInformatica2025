@@ -3,11 +3,16 @@ package viewPackage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,18 +24,26 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 import modelPackage.GameObject;
+import modelPackage.Prodotto;
 import modelPackage.User;
 import controlPackage.*;
+import modelPackage.*;
 
 public class ViewNegozio extends GameObject {
 
     ControllerNegozio controller;
+    ControllerUtente controllerUtente;
     
+    private String tipologiaNegozio;
+    private boolean posseduto = false;
     private int tipoNegozio = -1;
     private boolean frameVisible = false;
     private boolean open = false;
@@ -40,7 +53,12 @@ public class ViewNegozio extends GameObject {
     private JButton closeFrame;
     private JButton pulsanteRosso;
     private Color cassaBackgroundColor = Color.RED;
-    private JLabel labelContatore;
+    
+
+	private JLabel labelContatore;
+    
+    private JFrame frameAcquistaNegozio;
+    private boolean frameAcquistaNegozioCreato = false;
     
     // Array di upgrade disponibili
     private  String[] upgrades = {
@@ -48,12 +66,25 @@ public class ViewNegozio extends GameObject {
         "Lvl 1, Dimensione Scaffali ",
     };
     
-    // Variabili per i frame
+    //Attributi per la finestra dei clienti
+    private JFrame frameClienti;
+    private JPanel mainPanelClienti;
+    private JLabel labelSuperioreClienti;
+    private JPanel panelInferioreClienti;
+    private JPanel panelBottoniDestra;
+    private JButton checkButton;
+    private JButton accettaButton;
+    private JButton rifiutaButton;
+    private JTextArea areaTesto;
+    private JScrollPane scrollPane;
+    
+    
+    // Attributi per i frame
     private JFrame upgradeFrame;
     private JFrame dipendentiFrame;
     private JFrame magazzinoFrame;
     
- // Variabili per la finestra degli scaffali
+ // Attributi per la finestra degli scaffali
     private JFrame scaffaliFrame;
     private JButton spostaButton;
     private JPanel spostaContainer;
@@ -65,16 +96,17 @@ public class ViewNegozio extends GameObject {
     private JButton decrementButtonScaffali;
     private JButton incrementButtonScaffali;
     private JLabel quantityLabelScaffali;
-    private int currentQuantityScaffali = 1;  // Valore corrente della quantità
+    private int currentQuantityScaffali = 1;
     private JPanel totalePanelScaffali;
     private JPanel prezzoPanelScaffali;
     private JPanel containerPanelScaffali;
     private JLabel prezzoLabelScaffali;
     private boolean finestraScaffaliCreata = false;
+    private JLabel labelGestioneScaffali;
     
     
     
-    // Variabili per la finestra del magazzino
+    // Attributi per la finestra del magazzino
     private JPanel acquistaContainer;
     private JButton acquistaButtonMagazzino;
     private JLabel numeroProdottiLabelMagazzino;
@@ -85,28 +117,29 @@ public class ViewNegozio extends GameObject {
     private JButton decrementButton;
     private JButton incrementButton;
     private JLabel quantityLabel;
-    private int currentQuantity = 1;  // Valore corrente della quantità
+    private int currentQuantity = 1;  
     private JPanel totalePanelMagazzino;
     private JPanel prezzoPanel;
     private JPanel containerPanel;
     private JLabel prezzoLabel;
     private boolean finestraMagazzinoCreata = false;
+    private JLabel labelGestioneMagazzino;
     
-    //variabili per la finestra dei dipendenti
+    //Attributi per la finestra dei dipendenti
     private JPanel dipendentiMainPanel;
     private JLabel[] dipLabel = new JLabel[3];
     private JPanel[] dipPanel = new JPanel[3];
     private JButton[] acquistaButton = new JButton[3];
     private boolean finestraDipendentiCreata = false;
     
-    //variabili per la finestra di upgrade
+    //Attributi per la finestra di upgrade
     private JButton upgradeChiudiButton;
     private JButton[] acquistaButtonUpgrade = new JButton[getUpgrades().length];
     private JPanel[] upgradePanel = new JPanel[getUpgrades().length];
     private JLabel[] upgradeLabel = new JLabel[getUpgrades().length];
     private boolean finestraUpgradeCreata = false;
     
-    //variabili per la grafica del magazzino e dello scaffale
+    //Attributi per la grafica del magazzino e dello scaffale
     private JPanel inventoryPanel;
     private ArrayList<JPanel> celleScaffale;
     private ArrayList<JPanel> celleMagazzino;
@@ -133,10 +166,15 @@ public class ViewNegozio extends GameObject {
     
     private MyFrame citta;
 
-    public ViewNegozio(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y, MyFrame citta) {
+    public ViewNegozio(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y, MyFrame citta, ControllerUtente controllerUtente, String tipologiaNegozio) {
         super(gamePanel, path, x, y, size_x, size_y);
         this.gamePanel = gamePanel;
         this.citta = citta;
+        this.controllerUtente = controllerUtente;
+        this.tipologiaNegozio = tipologiaNegozio;
+        frameVisible = false;
+        creaFrame();
+        
     }
 
     public void addController(ControllerNegozio controller) {
@@ -150,13 +188,24 @@ public class ViewNegozio extends GameObject {
     @Override
     public void update() {
         if (InputManager.isMouseOver(this) && InputManager.isMousePressed("left") && !open) {
-            frameVisible = true;
-            creaFrame();
-            open = true;
-            citta.setVisible(false);
-            if (frameVisible) {
-                frameGioielleria.requestFocusInWindow();
-            }
+        	if(posseduto) {
+        		 frameVisible = true;
+                 open = true;
+                 frameGioielleria.setVisible(frameVisible);
+                 citta.setVisible(false);
+                 if (frameVisible) {
+                     frameGioielleria.requestFocusInWindow();
+                 }
+        	}
+        	else {
+        		if(!frameAcquistaNegozioCreato) {
+            		apriFinestraAcquistoNegozio();
+        		}
+        		else {
+        			frameAcquistaNegozio.setVisible(true);
+        		}
+        	}
+           
         }
         else if(!open) {
         	citta.patrimonioLabel.setText("PATRIMONIO: " + User.patrimonioUtente + "$");
@@ -168,6 +217,107 @@ public class ViewNegozio extends GameObject {
         super.update();
     }
 
+    public void apriFinestraAcquistoNegozio() {
+    	
+    	frameAcquistaNegozioCreato = true;
+    	
+        frameAcquistaNegozio = new JFrame("Acquista " + tipologiaNegozio);
+        frameAcquistaNegozio.setSize(300, 200);
+        frameAcquistaNegozio.setLayout(new BorderLayout());
+
+        
+        JLabel titolo = new JLabel(tipologiaNegozio, SwingConstants.CENTER);
+        titolo.setFont(new Font("Arial", Font.BOLD, 14));
+        frameAcquistaNegozio.add(titolo, BorderLayout.NORTH);
+
+        
+        JLabel prezzo = new JLabel("", SwingConstants.CENTER);
+        prezzo.setFont(new Font("Arial", Font.PLAIN, 16));
+        switch(tipologiaNegozio) {
+    	case "Gioielleria":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[2] + "$");
+    	break;
+    	case "GameStop":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[0] + "$");
+    	break;
+    	case "Vestiti":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[1] + "$");
+    	break;
+    	case "Libreria":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[0] + "$");
+    	break;
+    	case "Elettronica":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[1] + "$");
+    	break;
+    	case "Concessionario":
+    		prezzo.setText("Prezzo: " + controllerUtente.utente.prezziNegozi[2] + "$");
+    	break;
+    	default:
+    		System.out.println("Errore nell'acquisto del negozio");
+    	
+    	}
+        frameAcquistaNegozio.add(prezzo, BorderLayout.CENTER);
+
+        
+        JButton acquistaButton = new JButton("Acquista");
+        acquistaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	switch(tipologiaNegozio) {
+            	case "Gioielleria":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[2], new Gioielleria(gamePanel, ViewNegozio.this))) {
+            		posseduto = true;
+            		frameAcquistaNegozio.setVisible(false);
+            		}
+            	break;
+            	case "GameStop":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[0], new GameStop(gamePanel, ViewNegozio.this))) {
+                		posseduto = true;
+                		frameAcquistaNegozio.setVisible(false);
+                	}
+            	break;
+            	case "Vestiti":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[1], new Vestiti(gamePanel, ViewNegozio.this))) {
+                		posseduto = true;
+                		frameAcquistaNegozio.setVisible(false);
+                				}
+            	break;
+            	case "Libreria":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[0], new Libreria(gamePanel, ViewNegozio.this))) {
+                		posseduto = true;
+                		frameAcquistaNegozio.setVisible(false);
+                				}
+            	break;
+            	case "Elettronica":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[1], new Elettronica(gamePanel, ViewNegozio.this))) {
+                		posseduto = true;
+                		frameAcquistaNegozio.setVisible(false);
+                				}
+            	break;
+            	case "Concessionario":
+            		if(controllerUtente.acquistaNegozio(controllerUtente.utente.prezziNegozi[2], new Concessionario(gamePanel, ViewNegozio.this))) {
+                		posseduto = true;
+                		
+                				}
+            	break;
+            	default:
+            		System.out.println("Errore nell'acquisto del negozio");
+            	
+            	}
+
+            }
+        });
+        
+        JPanel panelPulsante = new JPanel();
+        panelPulsante.add(acquistaButton);
+        frameAcquistaNegozio.add(panelPulsante, BorderLayout.SOUTH);
+
+        // Mostra la finestra
+        frameAcquistaNegozio.setVisible(true);
+    	
+    }
+    
+    
     public void creaFrame() {
         frameGioielleria = new MyFrameNegozio();
         frameGioielleria.setSize(850, 650);
@@ -539,11 +689,17 @@ public class ViewNegozio extends GameObject {
         
         pulsanteRosso.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //apri frame cassa
+                apriFinestraCassa();
             }
         });
-
-        labelContatore = new JLabel(((Integer)controller.negozio.getCodaNegozio()).toString());
+        
+        labelContatore = new JLabel("");
+        if(controllerAdded) {
+        	labelContatore.setText(((Integer)controller.negozio.getCodaNegozio()).toString());
+        }
+        else {
+        	labelContatore.setText("-1");
+        }
         labelContatore.setName("labelContatore");
         labelContatore.setOpaque(true);
         labelContatore.setBackground(Color.WHITE);
@@ -562,7 +718,7 @@ public class ViewNegozio extends GameObject {
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
-        acquistaButtonProdotti = new JButton("ACQUISTA LIBRI");
+        acquistaButtonProdotti = new JButton("GESTIONE MAGAZZINO");
         stylePulsanteCentrato(acquistaButtonProdotti, new Color(50, 150, 50));
         acquistaButtonProdotti.addActionListener(new ActionListener() {
             @Override
@@ -571,7 +727,7 @@ public class ViewNegozio extends GameObject {
             }
         });
 
-        priceButton = new JButton("IMPOSTA PREZZO");
+        priceButton = new JButton("GESTIONE SCAFFALI");
         stylePulsanteCentrato(priceButton, new Color(70, 70, 200));
         priceButton.addActionListener(new ActionListener() {
         	 @Override
@@ -699,27 +855,33 @@ public class ViewNegozio extends GameObject {
         
         mainPanelScaffali.add(containerPanelScaffali);
         mainPanelScaffali.add(Box.createVerticalStrut(15));
-
-        // Pulsante acquista (centrato)
+        
         spostaContainer = new JPanel();
         spostaContainer.setLayout(new BoxLayout(spostaContainer, BoxLayout.X_AXIS));
         spostaContainer.add(Box.createHorizontalGlue());
-        
-        spostaButton = new JButton("SPOSTA");
-        spostaButton.setFont(new Font("Arial", Font.BOLD, 14));
-        spostaButton.setPreferredSize(new Dimension(120, 30));
-        spostaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    controller.spostaProdottiMagazzinoScaffale();
-                } catch (NumberFormatException ex) {
-                    System.out.println("Spostamento fallito");
+
+        if(!controller.negozio.dipendentiAcquistati[0]) {
+        	spostaButton = new JButton("SPOSTA");
+            spostaButton.setFont(new Font("Arial", Font.BOLD, 14));
+            spostaButton.setPreferredSize(new Dimension(120, 30));
+            spostaButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        controller.spostaProdottiMagazzinoScaffale();
+                    } catch (NumberFormatException ex) {
+                        System.out.println("Spostamento fallito");
+                    }
                 }
-            }
-        });
+            });
+            spostaContainer.add(spostaButton);
+        }
+        else {
+        	labelGestioneScaffali = new JLabel("Il magazziniere si occuperà dello spostamento");
+        	spostaContainer.add(labelGestioneScaffali);
+        }
         
-        spostaContainer.add(spostaButton);
+
         spostaContainer.add(Box.createHorizontalGlue());
         
         mainPanelScaffali.add(spostaContainer);
@@ -837,22 +999,30 @@ public class ViewNegozio extends GameObject {
         acquistaContainer.setLayout(new BoxLayout(acquistaContainer, BoxLayout.X_AXIS));
         acquistaContainer.add(Box.createHorizontalGlue());
         
-        acquistaButtonMagazzino = new JButton("ACQUISTA");
-        acquistaButtonMagazzino.setFont(new Font("Arial", Font.BOLD, 14));
-        acquistaButtonMagazzino.setPreferredSize(new Dimension(120, 30));
-        acquistaButtonMagazzino.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    aggiornaNumeroProdotti();
-                } catch (NumberFormatException ex) {
-                    System.out.println("Inserire un numero valido");
+        if(!controller.negozio.dipendentiAcquistati[2]) {
+        	acquistaButtonMagazzino = new JButton("ACQUISTA");
+            acquistaButtonMagazzino.setFont(new Font("Arial", Font.BOLD, 14));
+            acquistaButtonMagazzino.setPreferredSize(new Dimension(120, 30));
+            acquistaButtonMagazzino.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        aggiornaNumeroProdotti();
+                    } catch (NumberFormatException ex) {
+                        System.out.println("Inserire un numero valido");
+                    }
                 }
-            }
-        });
-        
-        acquistaContainer.add(acquistaButtonMagazzino);
+            });
+            
+            acquistaContainer.add(acquistaButtonMagazzino);
+        }
+        else {
+        	labelGestioneMagazzino = new JLabel("Il commerciante si occuperà dell'acquisto");
+        	acquistaContainer.add(labelGestioneMagazzino);
+
+        }
         acquistaContainer.add(Box.createHorizontalGlue());
+        
         
         mainPanelMagazzino.add(acquistaContainer);
         mainPanelMagazzino.add(Box.createVerticalStrut(10));
@@ -908,6 +1078,145 @@ public class ViewNegozio extends GameObject {
         });
     }
 
+    private void apriFinestraCassa() {
+        frameClienti = new JFrame("Finestra Cliente");
+        frameClienti.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frameClienti.setSize(700, 400);
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frameClienti.setLocation((screenSize.width - frameClienti.getWidth()) / 2, 
+                         (screenSize.height - frameClienti.getHeight()) / 2);
+        
+        mainPanelClienti = new JPanel(new BorderLayout());
+        frameClienti.add(mainPanelClienti);
+        
+        // Parte superiore
+        labelSuperioreClienti = new JLabel();
+        if(controller.negozio.getClienteCorrente() != null) {
+            labelSuperioreClienti.setText(controller.negozio.getClienteCorrente().domandaCliente + 
+                                        controller.negozio.getClienteCorrente().richiesta + "?");
+        } else {
+            labelSuperioreClienti.setText("Nessuna richiesta attiva");
+        }
+        labelSuperioreClienti.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanelClienti.add(labelSuperioreClienti, BorderLayout.CENTER);
+        
+        // Parte inferiore
+        panelInferioreClienti = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        panelInferioreClienti.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Bottone Check a sinistra
+        checkButton = new JButton("Check");
+        checkButton.setName("bottoneCheckCliente");
+        checkButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostraListaProdotti();
+            }
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        panelInferioreClienti.add(checkButton, gbc);
+        
+        // Pannello per i bottoni destra (Accetta e Rifiuta)
+        panelBottoniDestra = new JPanel();
+        panelBottoniDestra.setLayout(new BoxLayout(panelBottoniDestra, BoxLayout.Y_AXIS));
+        
+        // Bottone Accetta
+        accettaButton = new JButton("Accetta");
+        accettaButton.setName("bottoneAccettaCliente");
+        accettaButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        accettaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(controller.negozio.getClienteCorrente() != null) {
+                    controller.negozio.setTrovato(true);
+                    controller.negozio.setDaVendere(true);
+                    frameClienti.dispose();
+                    SwingUtilities.invokeLater(() -> {
+                        controller.cambiaStatoCassa(true);
+                    });
+                }
+            }
+        });
+        panelBottoniDestra.add(accettaButton);
+        panelBottoniDestra.add(Box.createVerticalStrut(5));
+        
+        // Bottone Rifiuta
+        rifiutaButton = new JButton("Rifiuta");
+        rifiutaButton.setName("bottoneRifiutaCliente");
+        rifiutaButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        rifiutaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(controller.negozio.getClienteCorrente() != null) {
+                    controller.negozio.setTrovato(true);
+                    controller.negozio.setDaVendere(false);
+                    frameClienti.dispose();
+                    SwingUtilities.invokeLater(() -> {
+                        controller.cambiaStatoCassa(true);
+                    });
+                }
+            }
+        });
+        panelBottoniDestra.add(rifiutaButton);
+        
+        // Aggiungi il pannello dei bottoni destra al pannello inferiore
+        gbc.gridx = 1;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        panelInferioreClienti.add(panelBottoniDestra, gbc);
+        
+        // Aggiungi il pannello inferiore al pannello principale
+        mainPanelClienti.add(panelInferioreClienti, BorderLayout.SOUTH);
+        
+        frameClienti.setVisible(true);
+    }
+    
+    public JLabel getLabelSuperioreClienti() {
+		return labelSuperioreClienti;
+	}
+
+	public void setLabelSuperioreClienti(JLabel labelSuperioreClienti) {
+		this.labelSuperioreClienti = labelSuperioreClienti;
+	}
+
+	private void mostraListaProdotti() {
+	    // Rimuovi il pannello corrente se esiste già
+	    if (mainPanelClienti.getComponentCount() > 2) {
+	        mainPanelClienti.remove(2);
+	    }
+	    
+	    // Crea un'area di testo non editabile
+	    areaTesto = new JTextArea();
+	    areaTesto.setEditable(false);
+	    areaTesto.setFont(new Font("Monospaced", Font.PLAIN, 12));
+	    
+	    // Popola l'area di testo con gli elementi dell'ArrayList
+	    StringBuilder sb = new StringBuilder();
+	    for (Prodotto prodotto : controller.negozio.prodottiScaffale) {
+	        sb.append(prodotto.toString()).append("\n");
+	    }
+	    areaTesto.setText(sb.toString());
+	    
+	    // Crea un pannello scrollabile per l'area di testo
+	    scrollPane = new JScrollPane(areaTesto);
+	    scrollPane.setPreferredSize(new Dimension(200, 150));
+	    scrollPane.setBorder(BorderFactory.createTitledBorder("Lista Prodotti"));
+	    
+	    // Aggiungi il pannello scrollabile al pannello principale CORRETTO
+	    mainPanelClienti.add(scrollPane, BorderLayout.EAST);
+	    
+	    // Aggiorna la finestra
+	    frameClienti.revalidate();
+	    frameClienti.repaint();
+	}
+
     public JButton getPulsanteRosso() {
         return pulsanteRosso;
     }
@@ -916,27 +1225,24 @@ public class ViewNegozio extends GameObject {
         return labelContatore;
     }
     
-    private void aggiornaValori() {
+    public void aggiornaValori() {
     	
-        //aggiorno valori "cassa"
-    	pulsanteRosso.setBackground(this.cassaBackgroundColor);
-    	if(pulsanteRosso.getBackground() == Color.GREEN) {
-    		pulsanteRosso.setEnabled(true);
-    	}
-    	else {
-    		pulsanteRosso.setEnabled(false);
-    	}
-    	
-    	if(controllerAdded) {
-    		labelContatore.setText(((Integer)controller.negozio.getCodaNegozio()).toString());
-        	if(((Integer)controller.negozio.getCodaNegozio()) == controller.negozio.getMaxCoda()) {
-        		labelContatore.setForeground(Color.RED);
-        	}
-        	else{
-        		labelContatore.setForeground(Color.BLACK);
-        	}
-        	
-    	}
+    	// Aggiorna il pulsante in base allo stato del controller
+        if(controller != null) {
+            this.cassaBackgroundColor = controller.isCassaLibera() ? Color.GREEN : Color.RED;
+            pulsanteRosso.setBackground(this.cassaBackgroundColor);
+            pulsanteRosso.setEnabled(controller.isCassaLibera());
+        }
+        
+        // Resto del codice esistente...
+        if(controllerAdded) {
+            labelContatore.setText(((Integer)controller.negozio.getCodaNegozio()).toString());
+            if(((Integer)controller.negozio.getCodaNegozio()) == controller.negozio.getMaxCoda()) {
+                labelContatore.setForeground(Color.RED);
+            } else {
+                labelContatore.setForeground(Color.BLACK);
+            }
+        }
     	
     	
     	//aggiorno grafica scaffali
@@ -1064,5 +1370,13 @@ public class ViewNegozio extends GameObject {
 	        celleMagazzino = null;
 	        aggiornaValori();
 	    });
+	}
+	
+	public Color getCassaBackgroundColor() {
+		return cassaBackgroundColor;
+	}
+
+	public void setCassaBackgroundColor(Color cassaBackgroundColor) {
+		this.cassaBackgroundColor = cassaBackgroundColor;
 	}
 }

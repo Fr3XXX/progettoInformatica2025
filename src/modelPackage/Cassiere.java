@@ -8,8 +8,8 @@ public class Cassiere extends GameObject{
 	public int indexVendita;
 	public int i;
 	public String vendita;
-	private long lastActionTime = 0;
-    private final long DELAY = 500;
+	public int checkpoint = 0;
+
 	
 	public Cassiere(Negozio negozio, GamePanel gamePanel) {
 		super(gamePanel);
@@ -20,19 +20,28 @@ public class Cassiere extends GameObject{
 	//Dipendente che vende i prodotti
 	@Override
 	public void update() {
-		long now = System.currentTimeMillis();
 
-        // Altrimenti non fa nulla questo frame
-
-		negozio.setServito(true);//pronto per servire un cliente
-				
-		if(negozio.isServito2()) {//aspetta che il cliente scelga il prodotto	
-			
-			if(i>=negozio.prodottiScaffale.size()) {
-				negozio.setTrovato(true);
-			}
-			
+		if(checkpoint==0) {
+			negozio.setServito(true);//pronto per servire un cliente
+			checkpoint++;
+			i=0;
 		}
+		
+		if(checkpoint==1) {
+			if(negozio.isServito2()) {
+				checkpoint++;
+			}
+		}
+		
+		if(checkpoint==2) {
 			
+			if(i<=negozio.prodottiScaffale.size()) {
+				if(negozio.getController().cercaProdotto(indexVendita, vendita, i)) {
+					negozio.setTrovato(true);
+					checkpoint=0;
+				}
+				
+			}
+		}	
 	}
 }

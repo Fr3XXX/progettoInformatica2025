@@ -2,10 +2,7 @@ package modelPackage;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
 import javax.imageio.ImageIO;
 
 import viewPackage.GamePanel;
@@ -59,11 +56,6 @@ public class GameObject {
 	
 	public void delete() {
 		gamePanel.removeGameObject(this);
-		/*	GamePanel gamePanel;
-	BufferedImage texture;
-	int x, y, size_x, size_y;
-	boolean visible = true;*/
-		
 		gamePanel = null;
 		texture = null;
 		

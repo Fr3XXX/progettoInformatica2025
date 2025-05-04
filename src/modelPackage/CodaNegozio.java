@@ -19,8 +19,6 @@ public class CodaNegozio implements Runnable{
 		while(finito) {
 			
 			if((System.currentTimeMillis() - start) > cliente.tempoAttesaMax) {
-				
-				System.out.println(cliente.esclamazioni[0][(int) Math.random()*2]); //va stampata nella view
 				//dalla view il cliente verrà rimosso qui in questo punto
 				cliente.stufato = true;
 			}

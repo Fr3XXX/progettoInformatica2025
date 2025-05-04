@@ -1,6 +1,10 @@
 package controlPackage;
 
+import java.awt.Color;
 import java.util.Random;
+
+import javax.swing.SwingUtilities;
+
 import modelPackage.*;
 import viewPackage.*;
 
@@ -9,6 +13,8 @@ public class ControllerNegozio {
 	public Negozio negozio;
 	public ViewNegozio view;
 	
+	private boolean cassaLibera = true;
+	
 	public ControllerNegozio(Negozio negozio, ViewNegozio view) {
 		this.negozio = negozio;
 		this.view = view;
@@ -16,15 +22,6 @@ public class ControllerNegozio {
 	
 	public void acquistaNegozio(double prezzo) {
 		
-	}
-	
-	public void aperturaNegozio() {
-		if(!negozio.isAperto()) {
-			negozio.setAperto(true);;
-		}
-		else {
-			negozio.setAperto(false);
-		}
 	}
 	
 	public void acquistaProdottiMagazzino(int nProdotti) {
@@ -125,18 +122,22 @@ public class ControllerNegozio {
 		}
 	}
 
-	public void sceltaProdotto(int indexDomanda, String richiesta) {
+	public String sceltaProdotto(int indexDomanda) {
 		
-		int nrRichiesta = (int)(Math.random()*49);
-		if(indexDomanda == 0) {
-			richiesta = negozio.prodottiEsistenti[nrRichiesta].nome;
-		}
-		else {
-			richiesta = negozio.prodottiEsistenti[nrRichiesta].specifica;
-		}
-		
-		negozio.getCassiere().vendita = richiesta;
-		negozio.getCassiere().indexVendita = indexDomanda;
+		    int nrRichiesta = (int)(Math.random()*49);
+		    String richiesta;
+		    if(indexDomanda == 0) {
+		        richiesta = negozio.prodottiEsistenti[nrRichiesta].nome;
+		    }
+		    else {
+		        richiesta = negozio.prodottiEsistenti[nrRichiesta].specifica;
+		    }
+		    
+		    if(negozio.getCassiere() != null) {
+			    negozio.getCassiere().vendita = richiesta;
+			    negozio.getCassiere().indexVendita = indexDomanda;
+		    }
+		    return richiesta;
 	}
 	
 	public void acquistaDipendente(int i) {
@@ -174,6 +175,12 @@ public class ControllerNegozio {
 			}
 		}
 		
+	}
+	
+	public void cambiaStatoCassa(boolean libera) {
+	    this.cassaLibera = libera;
+	    view.setCassaBackgroundColor(libera ? Color.GREEN : Color.RED);
+	    view.aggiornaValori();
 	}
 	
 	public boolean isAcquistato(int i) {
@@ -260,6 +267,14 @@ public class ControllerNegozio {
         return random.nextDouble() >= probabilitaRifiuto;
     }
 	
+	public void stampaTestoCliente(String testo) {
+		SwingUtilities.invokeLater(() -> {
+	        if(view.getLabelSuperioreClienti() != null) {
+	            view.getLabelSuperioreClienti().setText(testo);
+	        }
+	    });
+	}
+	
 	public boolean isServendo() {
 		for(int i=0; i < negozio.clienti.length; i++) {
 			if(negozio.clienti[i].servendo) {
@@ -297,6 +312,9 @@ public class ControllerNegozio {
 		
 		return -1; //errore
 	
+	}
+	public boolean isCassaLibera() {
+	    return cassaLibera;
 	}
 
 }

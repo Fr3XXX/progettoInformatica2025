@@ -19,8 +19,8 @@ public abstract class Negozio extends GameObject{
 	private double prezzoUpgradeScaffali;
 	private double prezzoDipendenti;
 	private int livelloNegozio;
-	private boolean aperto;
 	private int codaNegozio;
+	private Cliente clienteCorrente;
 	private int maxCoda;
 	private ControllerNegozio controller;
 	public ArrayList <Prodotto> prodottiScaffale = new ArrayList <>(); //lista di prodotti in vendita
@@ -51,7 +51,6 @@ public abstract class Negozio extends GameObject{
 		this.livelliNegozio.put("Totale", 1);
 		this.livelliNegozio.put("Scaffali", 1);
 		this.livelliNegozio.put("Magazzino", 1);
-		this.aperto=false;
 		for(int i=0; i<dipendentiAcquistati.length; i++) {
 			dipendentiAcquistati[i] = false;
 		}
@@ -137,14 +136,6 @@ public abstract class Negozio extends GameObject{
 
 	public void setLivelloNegozio(int livelloNegozio) {
 		this.livelloNegozio = livelloNegozio;
-	}
-
-	public boolean isAperto() {
-		return aperto;
-	}
-
-	public void setAperto(boolean aperto) {
-		this.aperto = aperto;
 	}
 
 	public int getCodaNegozio() {
@@ -245,6 +236,14 @@ public abstract class Negozio extends GameObject{
 
 	public ViewNegozio getView() {
 		return view;
+	}
+
+	public Cliente getClienteCorrente() {
+		return clienteCorrente;
+	}
+
+	public void setClienteCorrente(Cliente clienteCorrente) {
+		this.clienteCorrente = clienteCorrente;
 	}
 
 	public void setView(ViewNegozio view) {
