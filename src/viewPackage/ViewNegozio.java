@@ -564,7 +564,7 @@ public class ViewNegozio extends GameObject {
 
         //grafica scaffale
         mainPanel = new JPanel();
-        mainPanel.setBorder(BorderFactory.createTitledBorder("Grafica Libreria"));
+        mainPanel.setBorder(BorderFactory.createTitledBorder("Scaffali"));
         mainPanel.setPreferredSize(new Dimension(320, 420));
         contentPanel.add(mainPanel);
         contentPanel.add(Box.createHorizontalStrut(25));
