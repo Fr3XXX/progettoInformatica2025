@@ -12,7 +12,7 @@ public class User {
 	
 	public User() {
 		
-		patrimonioUtente = 50000;
+		patrimonioUtente = 150000;
 		userController = new ControllerUtente(this);
 		
 	}

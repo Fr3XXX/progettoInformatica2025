@@ -31,8 +31,8 @@ public abstract class Negozio extends GameObject{
 	private boolean servito2 = false;//serve per gestire l'interazione cliente-cassiere
 	private boolean trovato = false; //serve per gestire l'interazione cliente-cassiere
 	private boolean daVendere = false; //serve per gestire l'interazione cliente-cassiere
-	private boolean dipendenti = false;//serve per far lavorare magazziniere e commerciante uno alla volta
-	private boolean dipendenti2 = false; //serve per far lavorare magazziniere e commerciante uno alla volta
+	private boolean dipendenti = true;//serve per far lavorare magazziniere e commerciante uno alla volta
+	private boolean dipendenti2 = true; //serve per far lavorare magazziniere e commerciante uno alla volta
 	private Magazziniere magazziniere;
 	private Cassiere cassiere;
 	private Commerciante commerciante;
@@ -45,7 +45,6 @@ public abstract class Negozio extends GameObject{
 		super(gamePanel);
 		controller= new ControllerNegozio(this, view);
 		this.view = view;
-		view.addController(controller);
 		this.codaNegozio = 0;
 		this.maxCoda = 6;
 		this.livelloNegozio = livelloNegozio;
@@ -58,7 +57,7 @@ public abstract class Negozio extends GameObject{
 		}
 		this.inserisciProdottiEsistenti();
 		this.setPrezziBase();
-		
+		view.addController(controller);
 		
 		
 		

@@ -30,7 +30,7 @@ public class ControllerNegozio {
 	public void acquistaProdottiMagazzino(int nProdotti) {
 			
 		if(User.patrimonioUtente >= nProdotti*negozio.getPrezzoAcquisto()) {			
-			if((50 - negozio.prodottiMagazzino.size()) >= nProdotti) {
+			if((negozio.getDimensioneMagazzino() - negozio.prodottiMagazzino.size()) >= nProdotti) {
 				for(int i=0; i<nProdotti; i++) {
 					User.patrimonioUtente-=negozio.getPrezzoAcquisto();			
 							negozio.prodottiMagazzino.add(negozio.prodottiEsistenti[(int)( Math.random()*49)]);
@@ -62,6 +62,7 @@ public class ControllerNegozio {
 			System.out.println("Non hai abbastanza soldi per questo upgrade");
 		}
 		else {
+			negozio.livelliNegozio.replace("Magazzino", (negozio.livelliNegozio.get("Magazzino") + 1));
 			User.patrimonioUtente-=negozio.getPrezzoUpgradeMagazzino();
 			if(negozio.getDimensioneMagazzino() % 2 == 0) {
 				int nuovoValore = (int) (negozio.getDimensioneMagazzino()*1.5);
@@ -75,7 +76,8 @@ public class ControllerNegozio {
 			this.aggiornaLivelloTotale();
 			int nuovoValore = (int) (negozio.getPrezzoUpgradeMagazzino()*1.5);
 			negozio.setPrezzoUpgradeMagazzino(nuovoValore);
-			this.view.upgrades[0] = "Lvl" + this.negozio.livelliNegozio.get("Magazzino") + ", Dimensione Magazzino - " + negozio.getPrezzoUpgradeMagazzino();
+			this.view.getUpgrades()[0] = "Lvl " + this.negozio.livelliNegozio.get("Magazzino") + ", Dimensione Magazzino - " + negozio.getPrezzoUpgradeMagazzino();
+			this.view.refreshGrafica();
 		}
 		
 	}
@@ -88,6 +90,7 @@ public class ControllerNegozio {
 		}
 		else {
 			User.patrimonioUtente-=negozio.getPrezzoUpgradeScaffali();
+			negozio.livelliNegozio.replace("Scaffali", (negozio.livelliNegozio.get("Scaffali") + 1));
 			if(negozio.getDimensioneScaffali() % 2 == 0) {
 				int nuovoValore = (int) (negozio.getDimensioneScaffali()*1.5);
 				negozio.setDimensioneScaffali(nuovoValore);			}
@@ -95,9 +98,10 @@ public class ControllerNegozio {
 				negozio.setDimensioneScaffali(negozio.getDimensioneScaffali()*2);//se il numero è dispari moltiplico per 2 per evitare che vengano numeri con la virgola
 			}
 			System.out.println("Dimensione scaffali aumentata a " + negozio.getDimensioneScaffali());
-			int nuovoValore = (int) (negozio.getPrezzoUpgradeMagazzino()*1.5);
+			int nuovoValore = (int) (negozio.getPrezzoUpgradeScaffali()*1.5);
 			negozio.setPrezzoUpgradeScaffali(nuovoValore);
-			this.view.upgrades[1] = "Lvl" + this.negozio.livelliNegozio.get("Scaffali") + ", Dimensione Scaffali - " + negozio.getPrezzoUpgradeScaffali();
+			this.view.getUpgrades()[1] = "Lvl " + this.negozio.livelliNegozio.get("Scaffali") + ", Dimensione Scaffali - " + negozio.getPrezzoUpgradeScaffali();
+			this.view.refreshGrafica();
 		}
 		
 	}
@@ -112,8 +116,6 @@ public class ControllerNegozio {
 	
 	//aggiorno i valori dell'HashMap dei livelli
 	public void aggiornaLivelloTotale() {
-
-		negozio.livelliNegozio.replace("Scaffali", (negozio.livelliNegozio.get("Scaffali") + 1));
 		
 		if((negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) % 2 == 0) {
 			negozio.livelliNegozio.replace("Totale", (negozio.livelliNegozio.get("Magazzino") + negozio.livelliNegozio.get("Scaffali")) / 2);
@@ -187,8 +189,8 @@ public class ControllerNegozio {
 	
 	public void spostaProdottiMagazzinoScaffale(){
 			if(negozio.prodottiMagazzino.size() > 0) {
-				negozio.prodottiScaffale.add(negozio.prodottiMagazzino.getLast());
-				negozio.prodottiMagazzino.removeLast();
+				negozio.prodottiScaffale.add(negozio.prodottiMagazzino.get(negozio.prodottiMagazzino.size() - 1));
+				negozio.prodottiMagazzino.remove(negozio.prodottiMagazzino.size() - 1);
 			}	
 	}
 	
@@ -265,6 +267,36 @@ public class ControllerNegozio {
 			}
 		}
 		return false;
+	}
+	
+	public int tipoNegozio() {
+		
+		if(this.negozio instanceof Libreria) {
+			return 0;
+		}
+		
+		if(this.negozio instanceof GameStop) {
+			return 1;
+		}
+		
+		if(this.negozio instanceof Vestiti) {
+			return 2;
+		}
+		
+		if(this.negozio instanceof Elettronica) {
+			return 3;
+		}
+		
+		if(this.negozio instanceof Concessionario) {
+			return 4;
+		}
+		
+		if(this.negozio instanceof Gioielleria) {
+			return 5;
+		}
+		
+		return -1; //errore
+	
 	}
 
 }

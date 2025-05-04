@@ -11,5 +11,4 @@ public class Tile {
 	per pixel — quindi è super utile in giochi 2D,
 	ditor grafici, generazione di immagini, ecc.*/
 	public BufferedImage image;
-	public boolean collision = false;
 }

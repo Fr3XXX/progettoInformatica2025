@@ -8,7 +8,7 @@ import controlPackage.*;
 
 public class MyFrame extends JFrame {
     
-    private JLabel patrimonioLabel;
+    public JLabel patrimonioLabel;
     private User utente;
     
     public MyFrame(String titolo) {
@@ -22,7 +22,7 @@ public class MyFrame extends JFrame {
         GamePanel gamePanel = new GamePanel(this);
         
         // Crea e configura il label del patrimonio
-        patrimonioLabel = new JLabel("PATRIMONIO TOT: 0$");
+        patrimonioLabel = new JLabel("PATRIMONIO: " + User.patrimonioUtente + "$");
         patrimonioLabel.setFont(new Font("Arial", Font.BOLD, 24));
         patrimonioLabel.setForeground(Color.YELLOW);
         patrimonioLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -38,41 +38,32 @@ public class MyFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setUndecorated(true);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setVisible(true);
-        
+
         // Inizializza utente e controller
         utente = new User();
         ControllerUtente controllerUtente = new ControllerUtente(utente);
         
-//        // Configura listener per aggiornamenti
-//        utente.addPropertyChangeListener(e -> {
-//            if("patrimonioUtente".equals(e.getPropertyName())) {
-//                SwingUtilities.invokeLater(() -> {
-//                    patrimonioLabel.setText("PATRIMONIO TOT: " + e.getNewValue() + "$");
-//                });
-//            }
-//        });
-        
-        // Esempio negozio
-        ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 50, 50, 64, 64);
+        ViewNegozio viewVestiti = new ViewNegozio(gamePanel, "/tiles/negozioVestiti.png", 50, 50, 64, 64, this);
 		
 		
-		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 1300, 50, 64, 64);
+		ViewNegozio viewLibreia= new ViewNegozio(gamePanel, "/tiles/negozioLibreria.png", 1300, 50, 64, 64, this);
 		
 		
-		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 650, 500, 64, 64);
+		ViewNegozio viewElettronica= new ViewNegozio(gamePanel, "/tiles/negozioElettronica.png", 650, 500, 64, 64, this);
 		
 		
-		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 650, 50, 64, 64);
+		ViewNegozio viewGioielleria= new ViewNegozio(gamePanel, "/tiles/negozioGioielleria.png", 650, 50, 64, 64, this);
 		
 		
-		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 1300, 500, 64, 64);
+		ViewNegozio viewConcessionario= new ViewNegozio(gamePanel, "/tiles/negozioConcessionario.png", 1300, 500, 64, 64, this);
 		
 		
-		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 50, 500, 64, 64);
+		ViewNegozio viewGameStop= new ViewNegozio(gamePanel, "/tiles/negozioGameStop.png", 50, 500, 64, 64, this);
 		
         controllerUtente.acquistaNegozio(0, new Gioielleria(gamePanel, viewGioielleria));
         
         gamePanel.startGameThread();
+        
+        this.setVisible(true);
     }
 }

@@ -14,12 +14,17 @@ public class TileManager {
 	//per la mappa
 	int mapTileNum[][];
 	
+
+	
 	public TileManager(GamePanel gp) {
 		this.gp=gp;
 		//quanti tile diversi implementiamo
-		tile=new Tile[10];
+		tile=new Tile[6];
+		
 		//map
 		mapTileNum=new int[gp.maxScreenCol][gp.maxScreenRow];
+		
+
 		
 		getTileImage();
 		loadMap();
@@ -46,7 +51,7 @@ public class TileManager {
 			
 			tile[5]=new Tile();
 			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/016.png"));
-					
+			
 			
 		}catch(IOException e) {
 			e.printStackTrace();			
