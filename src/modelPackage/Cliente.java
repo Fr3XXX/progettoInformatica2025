@@ -24,7 +24,7 @@ public class Cliente extends GameObject {
     private long lastActionTime = 0;
     private final long DELAY = 1500;
     private long lastActionTime2 = 0;
-    private final long DELAY2 = 8000;
+    private final long DELAY2 = 10000;
     
     public Cliente(Negozio negozio, GamePanel gamePanel) {
         super(gamePanel);
@@ -48,6 +48,7 @@ public class Cliente extends GameObject {
                     maxSoldiSpendibili = this.negozio.getPrezzoAcquisto() + Math.random()*(this.negozio.getPrezzoAcquisto()/2 - 2) + 2;
                     indexDomanda = (int) (Math.random());
                     domandaCliente = this.domande[indexDomanda][(int) (Math.random()*9)];
+                    System.out.println("Entrato in check 0");
                     this.checkpoint++;
                 }
             }
@@ -60,16 +61,27 @@ public class Cliente extends GameObject {
                 checkpoint++;
             }
             
-            if(checkpoint == 2 && negozio.getController().isCassaLibera()) {
+            if(checkpoint == 2 && !negozio.getController().isCassaLibera()) {
+            	if(!negozio.dipendentiAcquistati[1]) {
+            	System.out.println("Entrato in check 2");
                 negozio.setClienteCorrente(this);
-                negozio.getController().cambiaStatoCassa(true); // Cassa occupata
-                checkpoint++;
+                negozio.getController().cambiaStatoCassa(true);
+                checkpoint++;}
+            	else {
+            		if(negozio.isServito()) {
+            			System.out.println("Entrato in check 2");
+                        negozio.setClienteCorrente(this);
+                        negozio.getController().cambiaStatoCassa(true);
+                        checkpoint++;
+            		}
+            	}
             }
             
             if(checkpoint == 3) {
                 richiesta = negozio.getController().sceltaProdotto(indexDomanda);
                 negozio.getController().stampaTestoCliente(domandaCliente + richiesta + "?");
                 checkpoint++;
+                negozio.setServito2(true);
             }
             
             if(checkpoint == 4 && negozio.isTrovato()) {

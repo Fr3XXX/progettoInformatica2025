@@ -38,9 +38,15 @@ public class Cassiere extends GameObject{
 			if(i<=negozio.prodottiScaffale.size()) {
 				if(negozio.getController().cercaProdotto(indexVendita, vendita, i)) {
 					negozio.setTrovato(true);
+					negozio.setDaVendere(true);
 					checkpoint=0;
 				}
 				
+			}
+			else {
+				negozio.setDaVendere(false);
+				negozio.setTrovato(true);
+				checkpoint=0;
 			}
 		}	
 	}

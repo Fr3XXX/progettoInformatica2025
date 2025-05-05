@@ -1321,6 +1321,7 @@ public class ViewNegozio extends GameObject {
     	//aggiorno finestra magazzino
     	if(finestraMagazzinoCreata) {
     		numeroProdottiLabelMagazzino.setText("TOTALE: " + ((Integer)controller.negozio.prodottiMagazzino.size()).toString() + "/" + ((Integer)controller.negozio.getDimensioneMagazzino()).toString());
+    		controller.negozio.setPrezzoVendita(this.currentQuantityScaffali);
     	}
     	
     	

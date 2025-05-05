@@ -13,7 +13,7 @@ public class ControllerNegozio {
 	public Negozio negozio;
 	public ViewNegozio view;
 	
-	private boolean cassaLibera = true;
+	private boolean cassaLibera = false;
 	
 	public ControllerNegozio(Negozio negozio, ViewNegozio view) {
 		this.negozio = negozio;
