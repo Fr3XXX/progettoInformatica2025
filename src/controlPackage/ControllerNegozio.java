@@ -48,7 +48,7 @@ public class ControllerNegozio {
 		if(prodottoVendere != null) {
 			negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
 			User.patrimonioUtente+=negozio.getPrezzoVendita();
-			System.out.println("prodotto con nome " + prodottoVendere.nome + " è stato venduto");
+			view.getTransactionLabel().setText(view.getTransactionLabel().getText() + "Prodotto con nome " + prodottoVendere.nome + " è stato venduto");
 		}
 	}
 	

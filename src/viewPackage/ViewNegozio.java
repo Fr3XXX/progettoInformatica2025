@@ -125,6 +125,11 @@ public class ViewNegozio extends GameObject {
     private boolean finestraMagazzinoCreata = false;
     private JLabel labelGestioneMagazzino;
     
+    //Attributi grafica transazioni
+	private JLabel transactionLabel;
+	private long lastActionTime=0;
+	private final long DELAY = 45000;
+    
     //Attributi per la finestra dei dipendenti
     private JPanel dipendentiMainPanel;
     private JLabel[] dipLabel = new JLabel[3];
@@ -165,6 +170,7 @@ public class ViewNegozio extends GameObject {
     private JButton priceButton;
     
     private MyFrame citta;
+
 
     public ViewNegozio(GamePanel gamePanel, String path, int x, int y, int size_x, int size_y, MyFrame citta, ControllerUtente controllerUtente, String tipologiaNegozio) {
         super(gamePanel, path, x, y, size_x, size_y);
@@ -573,6 +579,7 @@ public class ViewNegozio extends GameObject {
         transactionPanel = new JPanel();
         transactionPanel.setBorder(BorderFactory.createTitledBorder("Transazioni"));
         transactionPanel.setPreferredSize(new Dimension(220, 420));
+        setTransactionLabel(new JLabel(""));
         contentPanel.add(transactionPanel);
 
         frameGioielleria.add(contentPanel);
@@ -1136,7 +1143,6 @@ public class ViewNegozio extends GameObject {
                 if(controller.negozio.getClienteCorrente() != null) {
                     controller.negozio.setTrovato(true);
                     controller.negozio.setDaVendere(true);
-                    frameClienti.dispose();
                     SwingUtilities.invokeLater(() -> {
                         controller.cambiaStatoCassa(true);
                     });
@@ -1156,7 +1162,6 @@ public class ViewNegozio extends GameObject {
                 if(controller.negozio.getClienteCorrente() != null) {
                     controller.negozio.setTrovato(true);
                     controller.negozio.setDaVendere(false);
-                    frameClienti.dispose();
                     SwingUtilities.invokeLater(() -> {
                         controller.cambiaStatoCassa(true);
                     });
@@ -1227,6 +1232,8 @@ public class ViewNegozio extends GameObject {
     
     public void aggiornaValori() {
     	
+    	long now = System.currentTimeMillis();;
+    	
     	// Aggiorna il pulsante in base allo stato del controller
         if(controller != null) {
             this.cassaBackgroundColor = controller.isCassaLibera() ? Color.GREEN : Color.RED;
@@ -1288,6 +1295,13 @@ public class ViewNegozio extends GameObject {
 
     	        }
     	 }
+    	 
+    	 //aggiorno grafica transazioni
+    	 if(now - this.lastActionTime >= DELAY) {
+    		 lastActionTime = now;
+    		 this.transactionLabel.setText("");
+    	 }
+    	 
     	//aggiorno valore patrimonio
     	budgetLabel.setText("Patrimonio: " + User.patrimonioUtente + "$");
     	
@@ -1379,5 +1393,13 @@ public class ViewNegozio extends GameObject {
 
 	public void setCassaBackgroundColor(Color cassaBackgroundColor) {
 		this.cassaBackgroundColor = cassaBackgroundColor;
+	}
+
+	public JLabel getTransactionLabel() {
+		return transactionLabel;
+	}
+
+	public void setTransactionLabel(JLabel transactionLabel) {
+		this.transactionLabel = transactionLabel;
 	}
 }
