@@ -36,6 +36,7 @@ public class Commerciante extends GameObject{
 						User.patrimonioUtente-=negozio.getPrezzoAcquisto()*numeroProdottiAcquisto;
 					}
 					negozio.setDipendenti2(true);
+					checkpoint=0;
 				}
 			
 			}

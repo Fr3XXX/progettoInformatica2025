@@ -20,17 +20,21 @@ public class ControllerNegozio {
 		this.view = view;
 	}
 	
-	public void acquistaNegozio(double prezzo) {
-		
-	}
-	
 	public void acquistaProdottiMagazzino(int nProdotti) {
 			
 		if(User.patrimonioUtente >= nProdotti*negozio.getPrezzoAcquisto()) {			
 			if((negozio.getDimensioneMagazzino() - negozio.prodottiMagazzino.size()) >= nProdotti) {
 				for(int i=0; i<nProdotti; i++) {
-					User.patrimonioUtente-=negozio.getPrezzoAcquisto();			
-							negozio.prodottiMagazzino.add(negozio.prodottiEsistenti[(int)( Math.random()*49)]);
+					User.patrimonioUtente-=negozio.getPrezzoAcquisto();	
+					Prodotto prodottoComprare = negozio.prodottiEsistenti[(int)( Math.random()*49)];
+					negozio.prodottiMagazzino.add(prodottoComprare);
+					if(view.getTransactionLabel().getText().equals("")) {
+						view.getTransactionLabel().setText("<html> </html>");
+					}
+					String stampaTransazione = view.getTransactionLabel().getText().replace("</html>",("<br>Prodotto con nome " + prodottoComprare.nome + " è stato acquistato per " + negozio.getPrezzoAcquisto() + "$</html>"));
+
+					view.getTransactionLabel().setText(stampaTransazione);
+
 				}	
 			}
 			else {
@@ -48,7 +52,11 @@ public class ControllerNegozio {
 		if(prodottoVendere != null) {
 			negozio.prodottiScaffale.remove(negozio.prodottiScaffale.indexOf(prodottoVendere));
 			User.patrimonioUtente+=negozio.getPrezzoVendita();
-			view.getTransactionLabel().setText(view.getTransactionLabel().getText() + "Prodotto con nome " + prodottoVendere.nome + " è stato venduto");
+			if(view.getTransactionLabel().getText().equals("")) {
+				view.getTransactionLabel().setText("<html> </html>");
+			}
+			String stampaTransazione = view.getTransactionLabel().getText().replace("</html>",("<br>Prodotto con nome " + prodottoVendere.nome + " è stato venduto per " + negozio.getPrezzoAcquisto() + "$</html>"));
+			view.getTransactionLabel().setText(stampaTransazione);
 		}
 	}
 	
@@ -195,7 +203,7 @@ public class ControllerNegozio {
 	}
 	
 	public void spostaProdottiMagazzinoScaffale(){
-			if(negozio.prodottiMagazzino.size() > 0) {
+			if(negozio.prodottiMagazzino.size() > 0 && negozio.prodottiScaffale.size() < negozio.getDimensioneScaffali()) {
 				negozio.prodottiScaffale.add(negozio.prodottiMagazzino.get(negozio.prodottiMagazzino.size() - 1));
 				negozio.prodottiMagazzino.remove(negozio.prodottiMagazzino.size() - 1);
 			}	

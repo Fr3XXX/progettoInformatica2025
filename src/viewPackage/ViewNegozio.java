@@ -579,7 +579,8 @@ public class ViewNegozio extends GameObject {
         transactionPanel = new JPanel();
         transactionPanel.setBorder(BorderFactory.createTitledBorder("Transazioni"));
         transactionPanel.setPreferredSize(new Dimension(220, 420));
-        setTransactionLabel(new JLabel(""));
+        transactionLabel = new JLabel("");
+        transactionPanel.add(transactionLabel);
         contentPanel.add(transactionPanel);
 
         frameGioielleria.add(contentPanel);
@@ -831,9 +832,9 @@ public class ViewNegozio extends GameObject {
         decrementButtonScaffali.setFont(new Font("Arial", Font.BOLD, 12));
         decrementButtonScaffali.setPreferredSize(new Dimension(50, 25));
         decrementButtonScaffali.addActionListener(e -> {
-            if(currentQuantity > 1) {
-                currentQuantity--;
-                quantityLabel.setText(String.valueOf(currentQuantity));
+            if(currentQuantityScaffali > 1) {
+                currentQuantityScaffali--;
+                quantityLabelScaffali.setText(String.valueOf(currentQuantityScaffali));
             }
         });
         quantitaPanelScaffali.add(decrementButtonScaffali);
@@ -1335,13 +1336,16 @@ public class ViewNegozio extends GameObject {
     	//aggiorno finestra magazzino
     	if(finestraMagazzinoCreata) {
     		numeroProdottiLabelMagazzino.setText("TOTALE: " + ((Integer)controller.negozio.prodottiMagazzino.size()).toString() + "/" + ((Integer)controller.negozio.getDimensioneMagazzino()).toString());
-    		controller.negozio.setPrezzoVendita(this.currentQuantityScaffali);
+    		if(controller.negozio.dipendentiAcquistati[2]) {
+    			controller.negozio.getCommerciante().numeroProdottiAcquisto = this.currentQuantity;
+    		}
     	}
     	
     	
     	//aggiorno finestra scaffali
     	if(finestraScaffaliCreata) {
     		numeroProdottiLabelScaffali.setText("TOTALE: " + ((Integer)controller.negozio.prodottiScaffale.size()).toString() + "/" + ((Integer)controller.negozio.getDimensioneScaffali()).toString());
+    		controller.negozio.setPrezzoVendita(this.currentQuantityScaffali);
     	}
 
     	
